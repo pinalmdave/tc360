@@ -1,0 +1,28 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:51735",
+      "sslPort": 44349
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "AZURE_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=techscreenstorageacct;AccountKey=y3/Xz/kKGoAAQRvvNLL3NVnw7emv5ffo7sDgULmMPWnXWUyJBvAAeNOs6rvRma6Ly84xoURd3ZMWgkLpOTDGJA==;EndpointSuffix=core.windows.net",
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "TechScreen": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    }
+  }
+}

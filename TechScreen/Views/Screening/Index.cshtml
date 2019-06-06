@@ -1,0 +1,107 @@
+﻿@model IEnumerable<TechScreen.DBEntities.Screening>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+@*<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IsJobDescOptSelected)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsCustomQuestionOptSelected)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.JobDesc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CandidateName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CandidateEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CandidatePhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ScreeningStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CandidateSignInCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastUpdated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastUpdatedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsJobDescOptSelected)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsCustomQuestionOptSelected)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobDesc)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CandidateName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CandidateEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CandidatePhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScreeningStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CandidateSignInCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastUpdatedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.UserId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ScreeningId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ScreeningId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ScreeningId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>*@

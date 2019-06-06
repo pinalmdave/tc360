@@ -1,0 +1,130 @@
+﻿@model List<TechScreen.Models.ScreeningModel>
+<h1>Client Dashboard Index</h1>
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="container">
+    <div class="row pull-right">
+        <a asp-area="" asp-controller="ClientDashboard" asp-action="NewScreening" class="btn btn-primary" >Add New Job requirement</a>
+    </div>
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <a asp-area="" asp-controller="Payment" asp-action="Index">Buy</a>
+    </div>
+</div>
+
+<div class="container">
+    @foreach (var screen in Model)
+    {
+        <div class="col-xs-12">
+            <div class="col-md-12 well">
+                <div class="row"><h2>Job Requirement</h2></div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>Hiring Company Name: </label>&nbsp;&nbsp;
+                        <span id="cHiringCompanyName">@screen.HiringCompanyName</span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Job Requisition #: </label>&nbsp;&nbsp;
+                        <span id="cJobRequisition">@screen.JobRequisitionNumber</span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Job Title: </label>&nbsp;&nbsp;
+                        <span id="cJobTitle">@screen.JobTitle</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>Area of Expertise: </label>&nbsp;&nbsp;
+                        <span id="cAreaOfExpertise">@screen.JobCat</span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Required Skills: </label>&nbsp;&nbsp;
+                        <span id="cRequiredSkills">@screen.TechId</span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Optional Skills: </label>&nbsp;&nbsp;
+                        <span id="cOptionalSkills">@screen.TechId</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label>Job Description: </label>&nbsp;&nbsp;
+                        <span id="cJobDescription">@screen.JobDesc</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label>Screening Questions: </label>&nbsp;&nbsp;
+                        <span id="cJobQ">@screen.ScreeningQuestions</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label>Special Request to the Interviewer: </label>&nbsp;&nbsp;
+                        <span id="cSpecialReq">@screen.SpecialRequest</span>
+                    </div>
+                </div>
+                <div class="row"><hr /></div>
+                <div class="row"><h2>Candidates</h2></div>
+                <div class="row">&nbsp;&nbsp;</div>
+                <div class="row"><button id="AddNewCandidate" class="btn btn-primary">Add Candidate</button></div>
+                @if (screen.ScreeningCandidate != null && screen.ScreeningCandidate.Count > 0)
+                {
+                    <table class="table table-striped" id="tblCandidate">
+                        <thead>
+                            <tr>
+                                <th scope="col">Candidate First Name</th>
+                                <th scope="col">Candidate Last Name</th>
+                                <th scope="col">Candidate Email</th>
+                                <th scope="col">Candidate Contact No</th>
+                                <th scope="col">Screening Status</th>
+                                <th scope="col">Overall score</th>
+                                <th scope="col">Last Updated</th>
+                                <th scope="col">View Detailed Score Report</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var candidate in screen.ScreeningCandidate)
+                            {
+                                if (@candidate != null)
+                                {
+                                    string screeningStatus = "";
+
+                                    if (candidate.ScreeningStatus == "P")
+                                    {
+                                        screeningStatus = "Pending";
+                                    }
+                                    if (candidate.ScreeningStatus == "C")
+                                    {
+                                        screeningStatus = "Complete";
+                                    }
+                                    if (candidate.ScreeningStatus == "A")
+                                    {
+                                        screeningStatus = "Assigned to Reviewer";
+                                    }
+
+                                    <tr>
+                                        <td>@candidate.CandidateFirstName</td>
+                                        <td>@candidate.CandidateLastName</td>
+                                        <td>@candidate.CandidateEmail</td>
+                                        <td>@candidate.CandidatePhone</td>
+                                        <td>@screeningStatus</td>
+                                        <td>@candidate.OverAllScore</td>
+                                        <td>@candidate.LastUpdated</td>
+                                        <td><a href="">View Detailed Report</a></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    }
+</div>
+

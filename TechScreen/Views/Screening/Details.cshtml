@@ -1,0 +1,96 @@
+﻿@model TechScreen.DBEntities.Screening
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+@*<div>
+    <h4>Screening</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.IsJobDescOptSelected)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsJobDescOptSelected)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsCustomQuestionOptSelected)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsCustomQuestionOptSelected)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.JobDesc)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.JobDesc)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CandidateName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CandidateName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CandidateEmail)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CandidateEmail)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CandidatePhone)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CandidatePhone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ScreeningStatus)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ScreeningStatus)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CandidateSignInCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CandidateSignInCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedOn)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedOn)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastUpdated)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastUpdated)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LastUpdatedBy)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LastUpdatedBy)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.UserId)
+        </dd>
+    </dl>
+</div>*@
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ScreeningId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

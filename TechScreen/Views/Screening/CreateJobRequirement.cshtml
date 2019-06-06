@@ -1,0 +1,150 @@
+﻿@model TechScreen.ViewModels.ScreeningViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@section Inlinecss
+    {
+<style>
+    body {
+        margin-top: 20px;
+    }
+</style>
+}
+
+
+@section Scripts
+    {
+
+    <script>
+        $(document).ready(function () {
+
+            $("#divTechSkills").hide();
+            $("#divJobDesc").hide();
+            $("#divInterviewQuestions").hide();
+
+            $("input[type='radio']").click(function () {
+                if ($('input:radio[name=rdQ]:checked').val() == "Y") {
+                    $("#divInterviewQuestions").show();
+                    $("#divTechSkills").hide();
+                    $("#divJobDesc").hide();
+                }
+                if ($('input:radio[name=rdQ]:checked').val() == "N") {
+                    $("#divInterviewQuestions").hide();
+                    $("#divTechSkills").show();
+                    $("#divJobDesc").show();
+                }
+            });
+
+        });
+    </script>
+}
+
+<form id="frmScreening" asp-action="PostJobRequirement">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="container">
+        <div class="col-xs-12">
+            <div class="col-md-12 well">
+                @*<h1>STEP 1</h1>*@
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="lblHiringCompanyName">Hiring Company Name</label>
+                        <input type="text" asp-for="Screening.HiringCompanyName" class="form-control">
+                        <span asp-validation-for="Screening.HiringCompanyName" class="text-danger"></span>
+
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lblJobRequisitionNumber">Job Requisition #</label>
+                        <input type="text" asp-for="Screening.JobRequisitionNumber" class="form-control">
+                    </div>
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="lblJobTitle">Job Title</label>
+                        <input type="text" asp-for="Screening.JobTitle" class="form-control">
+                        <span asp-validation-for="Screening.JobTitle" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName">Area of Expertise</label>
+                        <select class="form-control" asp-for="JobCategories" asp-items="@(new SelectList(Model.lstJobCategories, "JobCatId", "JobCatDesc"))">
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName">Do you have screening questions?&nbsp;&nbsp;</label>
+                        <input type="radio" value="Y" name="rdQ" /><label for="lastName">Yes&nbsp;&nbsp;</label>
+                        <input type="radio" value="N" name="rdQ" /><label for="lastName">No</label>
+                    </div>
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row" id="divTechSkills">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName">Required Skills</label>
+                        <select class="form-control" multiple asp-for="Technologies" asp-items="@(new SelectList(Model.lstTechnologies, "TechId", "TechName"))">
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName">Optional Skills</label>
+                        <select class="form-control" multiple asp-for="Technologies" asp-items="@(new SelectList(Model.lstTechnologies, "TechId", "TechName"))">
+                            <option value="">--Select--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row" id="divJobDesc">
+                    <div class="col-md-12 mb-3">
+                        <label for="firstName">Job Description</label>
+                        <textarea class="form-control" asp-for="Screening.JobDesc" rows="6" placeholder="Enter detailed job description here"></textarea>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName">(OR) Upload Job Description</label>
+                        <input type="file" value="Upload Job Description" />
+                    </div>
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row" id="divInterviewQuestions">
+                    <div class="col-md-12 mb-3">
+                        <label for="firstName">Enter Screening Questions</label>
+                        <textarea class="form-control" asp-for="Screening.JobScreeningQuestions" rows="6" placeholder="Enter or copy paste screening questions here"></textarea>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName">(OR) Upload File for screening questions</label>
+                        <input type="file" value="Upload Screening Questions" />
+                    </div>
+                </div>
+
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="firstName">Special Request to the Interviewer</label>
+                        <textarea class="form-control" id="jobDesc" rows="6" placeholder="Enter detailed job description here"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12 mb-3 text-right">
+                <button id="btnCreateJob" class="btn btn-primary">Create</button> &nbsp;&nbsp;
+                <a id="btnCancel" class="btn btn-link">Cancel</a>
+            </div>
+        </div>
+
+
+    </div>
+
+</form>

@@ -1,0 +1,198 @@
+﻿@model List<TechScreen.Models.ScreeningModel>
+<h1>Admin Dashboard</h1>
+
+@section Inlinecss
+{
+    <style>
+        .modal-backdrop {
+            z-index: 1020;
+        }
+    </style>
+}
+
+@section Scripts{ 
+    <script>
+        $(document).ready(function () {
+
+            function assignReviewer(candidateId) {
+
+                var url = $('#assignReviewerModal').data('url');
+
+                var data = { id: candidateId};
+
+                $.ajax({
+                    url: url,
+                    type: "get", 
+                    data: {
+                        id: candidateId
+                    },
+                    success: function (response) {
+                        //Do Something
+                    },
+                    error: function (xhr) {
+                        //Do Something to handle error
+                    }
+                });
+
+                return false;
+
+            }
+
+            //$('.assignLink').click(function (e) {
+                               
+            //    //alert("clicked");
+
+            //    var url = $('#assignReviewerModal').data('url');
+
+            //    $.get(url, function (data) {
+            //        $('#reviewerContainer').html(data);
+
+            //        $('#assignReviewerModal').modal('show');
+            //    });
+
+            //    return false;
+            //});
+        });
+    </script>
+
+}
+
+
+<div class="container">
+    @foreach (var screen in Model)
+    {
+        <div class="col-xs-12">
+            <div class="col-md-12 well">
+                <div class="row"><h2>Job Requirement</h2></div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>Hiring Company Name: </label>&nbsp;&nbsp;
+                        <span id="cHiringCompanyName">@screen.HiringCompanyName</span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Job Requisition #: </label>&nbsp;&nbsp;
+                        <span id="cJobRequisition">@screen.JobRequisitionNumber</span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Job Title: </label>&nbsp;&nbsp;
+                        <span id="cJobTitle">@screen.JobTitle</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label>Area of Expertise: </label>&nbsp;&nbsp;
+                        <span id="cAreaOfExpertise">@screen.JobCat</span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Required Skills: </label>&nbsp;&nbsp;
+                        <span id="cRequiredSkills">@screen.TechId</span>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Optional Skills: </label>&nbsp;&nbsp;
+                        <span id="cOptionalSkills">@screen.TechId</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label>Job Description: </label>&nbsp;&nbsp;
+                        <span id="cJobDescription">@screen.JobDesc</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label>Screening Questions: </label>&nbsp;&nbsp;
+                        <span id="cJobQ">@screen.ScreeningQuestions</span>
+                    </div>
+                </div>
+                <div class="row">&nbsp;</div>
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label>Special Request to the Interviewer: </label>&nbsp;&nbsp;
+                        <span id="cSpecialReq">@screen.SpecialRequest</span>
+                    </div>
+                </div>
+                <div class="row"><hr /></div>
+                <div class="row"><h2>Candidates</h2></div>
+                <div class="row">&nbsp;&nbsp;</div>
+                @if (screen.ScreeningCandidate != null && screen.ScreeningCandidate.Count > 0)
+                {
+                    <table class="table table-striped" id="tblCandidate">
+                        <thead>
+                            <tr>
+                                <th scope="col">Candidate First Name</th>
+                                <th scope="col">Candidate Last Name</th>
+                                <th scope="col">Candidate Email</th>
+                                <th scope="col">Candidate Contact No</th>
+                                <th scope="col">Screening Status</th>
+                                <th scope="col">Overall score</th>
+                                <th scope="col">Last Updated</th>
+                                <th scope="col">View Detailed Score Report</th>
+                                <th scope="col">Assign to Reviewer</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var candidate in screen.ScreeningCandidate)
+                            {
+                                if (@candidate != null)
+                                {
+                                    string screeningStatus = "";
+
+                                    if (candidate.ScreeningStatus == "P")
+                                    {
+                                        screeningStatus = "Pending";
+                                    }
+                                    if (candidate.ScreeningStatus == "C")
+                                    {
+                                        screeningStatus = "Complete";
+                                    }
+                                    if (candidate.ScreeningStatus == "A")
+                                    {
+                                        screeningStatus = "Assigned to Reviewer";
+                                    }
+                            <tr>
+                                <td>@candidate.CandidateFirstName</td>
+                                <td>@candidate.CandidateLastName</td>
+                                <td>@candidate.CandidateEmail</td>
+                                <td>@candidate.CandidatePhone</td>
+                                <td>@screeningStatus</td>
+                                <td>@candidate.OverAllScore</td>
+                                <td>@candidate.LastUpdated</td>
+                                <td><a href="">View Detailed Report</a></td>
+                                <td><a href="" class="assignLink" onclick="assignReviewer(@candidate.CandidateId)">Assign</a></td>
+                            </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+
+
+<div id='assignReviewerModal' data-url='@Url.Action("AssignReviewer")' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Assign Reviewer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id='reviewerContainer'>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Assign Reviewer</button>
+            </div>
+        </div>
+    </div>
+</div>

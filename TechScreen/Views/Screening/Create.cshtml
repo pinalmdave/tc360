@@ -1,0 +1,499 @@
+﻿@model TechScreen.ViewModels.ScreeningViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@section Inlinecss
+    {
+    <style>
+        body {
+            margin-top: 20px;
+        }
+    </style>
+}
+
+@section Scripts
+    {
+    <script>
+
+        $(document).ready(function () {
+
+            var cnt = 0;
+
+            $("#btnAddCandidate").click(function (e) {
+                e.preventDefault();
+                cnt = cnt + 1;
+
+                $('#tblCandidate tr:last').after('\
+                            <tr>\
+                                <td>\
+                                    <input type="text" asp-for="ScreeningCandidateModel.CandidateFirstName" class="form-control" id="CandidateFirstName'+ cnt.toString() + '"' + '>\
+                                    <span asp-validation-for="ScreeningCandidateModel.CandidateFirstName" class="text-danger"></span>\
+                                </td>\
+                                <td>\
+                                    <input type="text" asp-for="ScreeningCandidateModel.CandidateLastName" class="form-control" id="CandidateLastName'+ cnt.toString() + '"' + '>\
+                                    <span asp-validation-for="ScreeningCandidateModel.CandidateLastName" class="text-danger"></span>\
+                                </td>\
+                                <td>\
+                                    <input type="text" asp-for="ScreeningCandidateModel.CandidateEmail" class="form-control" id="CandidateEmail'+ cnt.toString() + '"' + '>\
+                                    <span asp-validation-for="ScreeningCandidateModel.CandidateEmail" class="text-danger"></span>\
+                                </td>\
+                                <td>\
+                                    <input type="text" asp-for="ScreeningCandidateModel.CandidatePhone" class="form-control" id="CandidatePhone'+ cnt.toString() + '"' + '>\
+                                    <span asp-validation-for="ScreeningCandidateModel.CandidatePhone" class="text-danger"></span>\
+                                </td>\
+                                <td>\
+                                    Delete\
+                                </td>\
+                            </tr>\
+                            ');
+
+            });
+
+
+            $("#divTechSkills").hide();
+            $("#divJobDesc").hide();
+            $("#divInterviewQuestions").hide();
+
+            $("input[type='radio']").click(function () {
+                if ($('input:radio[name=rdQ]:checked').val() == "Y") {
+                    $("#divInterviewQuestions").show();
+                    $("#divTechSkills").hide();
+                    $("#divJobDesc").hide();
+                }
+                if ($('input:radio[name=rdQ]:checked').val() == "N") {
+                    $("#divInterviewQuestions").hide();
+                    $("#divTechSkills").show();
+                    $("#divJobDesc").show();
+                }
+            });
+
+            var navListItems = $('ul.setup-panel li a'),
+                allWells = $('.setup-content');
+
+            allWells.hide();
+
+            navListItems.click(function (e) {
+                e.preventDefault();
+                var $target = $($(this).attr('href')),
+                    $item = $(this).closest('li');
+
+                if (!$item.hasClass('disabled')) {
+                    navListItems.closest('li').removeClass('active');
+                    $item.addClass('active');
+                    allWells.hide();
+                    $target.show();
+                }
+            });
+
+            $('ul.setup-panel li.active a').trigger('click');
+
+            //Previous..Next Buttons
+
+            var currentStepIndex = $('ul').find('li.active').index();
+
+            // $("#btnPrevious").hide();
+            $("#btnEdit").hide();
+            $("#btnConfirm").hide();
+
+            $("#btnConfirm").click(function (e) {
+                e.preventDefault();
+
+                PostData();
+            });
+
+            //
+
+            $("#btnNext").click(function (e) {
+                // $("#btnPrevious").show();
+
+                var currentStepIndex = $('ul').find('li.active').index();
+
+                if (currentStepIndex == 0) {
+                    $('ul.setup-panel li:eq(1)').removeClass('disabled');
+                    $('ul.setup-panel li a[href="#step-2"]').trigger('click');
+                    //CreateJobRequirement();
+                }
+                else if (currentStepIndex == 1) {
+                    $('ul.setup-panel li:eq(2)').removeClass('disabled');
+                    $('ul.setup-panel li a[href="#step-3"]').trigger('click');
+                }
+                else if (currentStepIndex == 2) {
+                    $('ul.setup-panel li:eq(3)').removeClass('disabled');
+                    $('ul.setup-panel li a[href="#step-4"]').trigger('click');
+                }
+
+                e.preventDefault();
+            });
+
+            function PostData() {
+
+                var form = $("#frmScreening");
+
+                var model = form.serialize();
+
+                var screeningCandidates = new Array();
+
+                $("#tblClone tr").each(function () {
+                   // debugger;
+                    var row = $(this);
+                    var screeningCandidate = {};
+                    screeningCandidate.CandidateFirstName = row.find("TD").eq(0).find("input").val();
+                    screeningCandidate.CandidateLastName = row.find("TD").eq(1).find("input").val();
+                    screeningCandidate.CandidateEmail = row.find("TD").eq(2).find("input").val();
+                    screeningCandidate.CandidatePhone = row.find("TD").eq(3).find("input").val();
+
+                    if (jQuery.type(screeningCandidate.CandidateFirstName) != "undefined") {
+                        screeningCandidates.push(screeningCandidate);
+                    }
+                });
+                
+                
+                //debugger;
+
+                //var model2 = form.serializeArray();
+                //console.log(JSON.stringify(model2));
+
+                console.log(JSON.stringify(screeningCandidates));
+
+                var formData = new FormData();
+                formData.append('candidates', JSON.stringify(screeningCandidates));
+                formData.append('jobReq', model);
+
+                debugger;
+
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/Screening/PostJobRequirement",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) { alert(data); },
+                        error: function (data) { alert(data); }
+                    })
+            }
+
+            //$("#btnPrevious").click(function (e) {
+            //    $("#btnNext").show();
+            //    debugger;
+            //    var currentStepIndex = $('ul').find('li.active').index();
+
+            //    PopulateSummary(currentStepIndex);
+
+            //    if (currentStepIndex == 1) {
+            //        $('ul.setup-panel li a[href="#step-1"]').trigger('click');
+            //    }
+            //    else if (currentStepIndex == 2) {
+            //        $('ul.setup-panel li a[href="#step-2"]').trigger('click');
+            //    }
+            //    else if (currentStepIndex == 3) {
+            //        $('ul.setup-panel li a[href="#step-3"]').trigger('click');
+            //    }
+            //    e.preventDefault();
+            //});
+
+            function PopulateSummary() {
+              
+                    $("#cHiringCompanyName").text($("#Screening_HiringCompanyName").val());
+                    $("#cJobRequisition").text($("#Screening_JobRequisitionNumber").val());
+                    $("#cJobTitle").text($("#Screening_JobTitle").val());
+                    $("#cJobQ").text($("#Screening_JobScreeningQuestions").val());
+                    $("#cJobDescription").text($("#Screening_JobDesc").val());
+                    $("#cSpecialReq").text($("#Screening_SpecialRequest").val());
+                    $("#cAreaOfExpertise").text($('#JobCategories').find(":selected").text());
+                    $("#cRequiredSkills").text($('#Technologies').find(":selected").text());
+                    $("#cOptionalSkills").text($('#Technologies').find(":selected").text());
+
+                    //Candidates
+                    $("#tblClone tr").remove();
+                    $("#tblCandidate").clone().appendTo($("#tblClone"));
+                    $("#tblClone").find("input,button,textarea,select").attr("disabled", "disabled");
+   
+                    $('ul.setup-panel li:eq(0)').addClass('disabled');
+                    $('ul.setup-panel li:eq(1)').addClass('disabled');
+            }
+
+            $("#btnEdit").click(function (e) {
+                $("#btnEdit").hide();
+                $("#btnConfirm").hide();
+                $("#btnNext").show();
+                e.preventDefault();
+
+                $('ul.setup-panel li:eq(0)').removeClass('disabled');
+                $('ul.setup-panel li:eq(1)').removeClass('disabled');
+                $('ul.setup-panel li:eq(2)').addClass('disabled');
+                $('ul.setup-panel li a[href="#step-1"]').trigger('click');
+            });
+
+            $('ul').find('li').on('click', function (e) {
+
+                // $("#btnPrevious").show();
+                $("#btnNext").show();
+
+                var currentStepIndex = $('ul').find('li.active').index();
+
+                if (currentStepIndex == 0) {
+                    // $("#btnPrevious").hide();
+                }
+                if (currentStepIndex == 2) {
+                    $("#btnNext").hide();
+                    $("#btnEdit").show();
+                    $("#btnConfirm").show();
+                    PopulateSummary();
+                }
+                if (currentStepIndex == 3) {
+                    // $("#btnPrevious").hide();
+                    $("#btnNext").hide();
+                    $("#btnEdit").hide();
+                    $("#btnConfirm").hide();
+
+                    $('ul.setup-panel li:eq(0)').addClass('disabled');
+                    $('ul.setup-panel li:eq(1)').addClass('disabled');
+                    $('ul.setup-panel li:eq(2)').addClass('disabled');
+                }
+            })
+        });
+    </script>
+}
+
+<form id="frmScreening" asp-action="PostJobRequirement" asp-controller="Screening" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="container">
+        <div class="row form-group">
+            <div class="col-xs-12">
+                <ul class="nav nav-pills nav-justified thumbnail setup-panel">
+                    <li class="active">
+                        <a href="#step-1">
+                            <h4 class="list-group-item-heading">Step 1</h4>
+                            <p class="list-group-item-text">Add New Job Requirement</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a href="#step-2">
+                            <h4 class="list-group-item-heading">Step 2</h4>
+                            <p class="list-group-item-text">Add Candidate(s)</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a href="#step-3">
+                            <h4 class="list-group-item-heading">Step 3</h4>
+                            <p class="list-group-item-text">Review Details</p>
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a href="#step-4">
+                            <h4 class="list-group-item-heading">Step 4</h4>
+                            <p class="list-group-item-text">Make Payment</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row setup-content" id="step-1">
+            <div class="col-xs-12">
+                <div class="col-md-12 well">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="lblHiringCompanyName">Hiring Company Name</label>
+                            <input type="text" asp-for="Screening.HiringCompanyName" class="form-control">
+                            <span asp-validation-for="Screening.HiringCompanyName" class="text-danger"></span>
+
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lblJobRequisitionNumber">Job Requisition #</label>
+                            <input type="text" asp-for="Screening.JobRequisitionNumber" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="lblJobTitle">Job Title</label>
+                            <input type="text" asp-for="Screening.JobTitle" class="form-control">
+                            <span asp-validation-for="Screening.JobTitle" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName">Area of Expertise</label>
+                            <select class="form-control" asp-for="JobCategories" asp-items="@(new SelectList(Model.lstJobCategories, "JobCatId", "JobCatDesc"))">
+                                <option value="">--Select--</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName">Do you have screening questions?&nbsp;&nbsp;</label>
+                            <input type="radio" value="Y" name="rdQ" /><label for="lastName">Yes&nbsp;&nbsp;</label>
+                            <input type="radio" value="N" name="rdQ" /><label for="lastName">No</label>
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row" id="divTechSkills">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName">Required Skills</label>
+                            <select class="form-control" multiple asp-for="Technologies" asp-items="@(new SelectList(Model.lstTechnologies, "TechId", "TechName"))">
+                                <option value="">--Select--</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName">Optional Skills</label>
+                            <select class="form-control" multiple asp-for="Technologies" asp-items="@(new SelectList(Model.lstTechnologies, "TechId", "TechName"))">
+                                <option value="">--Select--</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row" id="divJobDesc">
+                        <div class="col-md-12 mb-3">
+                            <label for="firstName">Job Description</label>
+                            <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.JobDesc" rows="9" placeholder="Enter detailed job description here"></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName">(OR) Upload Job Description</label>
+                            <input type="file" value="Upload Job Description" />
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row" id="divInterviewQuestions">
+                        <div class="col-md-12 mb-3">
+                            <label for="firstName">Enter Screening Questions</label>
+                            <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.JobScreeningQuestions" rows="9" placeholder="Enter or copy paste screening questions here"></textarea>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName">(OR) Upload File for screening questions</label>
+                            <input type="file" value="Upload Screening Questions" />
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="firstName">Special Request to the Interviewer</label>
+                            <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.SpecialRequest" rows="3" placeholder="Enter detailed job description here"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row setup-content" id="step-2">
+            <div class="col-xs-12">
+                <div class="col-md-12 well">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary" id="btnAddCandidate">Add New Candidate</button>
+                        </div>
+                    </div>
+
+                    <table class="table table-striped" id="tblCandidate">
+                        <thead>
+                            <tr>
+                                <th scope="col">Candidate First Name</th>
+                                <th scope="col">Candidate Last Name</th>
+                                <th scope="col">Candidate Email</th>
+                                <th scope="col">Candidate Contact No</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row setup-content" id="step-3">
+            <div class="col-xs-12">
+                <div class="col-md-12 well">
+                    <div class="row"><h2>Job Requirement</h2></div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label>Hiring Company Name: </label>&nbsp;&nbsp;
+                            <span id="cHiringCompanyName"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Job Requisition #: </label>&nbsp;&nbsp;
+                            <span id="cJobRequisition">REQ45887</span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Job Title: </label>&nbsp;&nbsp;
+                            <span id="cJobTitle"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label>Area of Expertise: </label>&nbsp;&nbsp;
+                            <span id="cAreaOfExpertise"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Required Skills: </label>&nbsp;&nbsp;
+                            <span id="cRequiredSkills"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Optional Skills: </label>&nbsp;&nbsp;
+                            <span id="cOptionalSkills"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label>Job Description: </label>&nbsp;&nbsp;
+                            <span id="cJobDescription"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label>Screening Questions: </label>&nbsp;&nbsp;
+                            <span id="cJobQ"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">&nbsp;</div>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label>Special Request to the Interviewer: </label>&nbsp;&nbsp;
+                            <span id="cSpecialReq"></span>
+                        </div>
+                    </div>
+                    <div class="row"><hr /></div>
+                    <div class="row"><h2>Candidates</h2></div>
+                    <table id="tblClone"></table>
+
+                </div>
+            </div>
+        </div>
+        <div class="row setup-content" id="step-4">
+            <div class="row">
+                <h1>Step 4</h1>
+            </div>
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="row">
+            @*<div class="col-md-6 mb-3 text-left">
+                    <button id="btnPrevious" class="btn btn-primary btn-lg">Previous</button>
+                </div>*@
+            <div class="col-md-6 mb-3 text-right">
+                <button id="btnEdit" class="btn btn-primary btn-lg">Edit</button>&nbsp;&nbsp;
+                <button id="btnNext" class="btn btn-primary btn-lg">Next</button>
+                <button id="btnConfirm" class="btn btn-primary btn-lg">Confirm</button>
+
+            </div>
+        </div>
+    </div>
+</form>

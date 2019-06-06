@@ -1,0 +1,17 @@
+﻿@model List<TechScreen.Models.ReviewerModel>
+
+@{
+    ViewData["Title"] = "_AssignReviewer";
+}
+
+
+<div class="container">
+    <div class="row">
+        @foreach(var item in Model)
+        {
+            <div>
+                   @item.FirstName
+            </div>
+        }
+    </div>
+</div>

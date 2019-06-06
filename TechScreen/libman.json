@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "provider": "cdnjs",
+      "library": "jquery@3.4.1",
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery-steps@1.1.0",
+      "destination": "wwwroot/lib/jquery-steps/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "font-awesome@5.8.2",
+      "destination": "wwwroot/lib/font-awesome/"
+    }
+  ]
+}

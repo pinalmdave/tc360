@@ -1,0 +1,12 @@
+﻿@model TechScreen.ViewModels.CandidateCodeViewModel
+
+    <form asp-action="VerifyCandidateCode">
+        <div>
+            Enter your Code
+        </div>
+        <div>
+            <input asp-for="CandidateCode" class="form-control" />
+        </div>
+
+        <div><button id="btnSubmit" class="btn btn-primary">Submit</button></div>
+    </form>

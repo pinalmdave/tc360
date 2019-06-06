@@ -1,0 +1,159 @@
+﻿@model List<TechScreen.DBEntities.ScreeningQuestions>
+@using Newtonsoft.Json;
+
+@{
+       var jsonObject = JsonConvert.SerializeObject(Model, Formatting.None,
+                           new JsonSerializerSettings()
+                           {
+                               ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                           });
+    }
+
+@section Scripts
+    {
+    <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="https://www.webrtc-experiment.com/common.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+            var cnt = 0;
+            var jsonString = '@jsonObject';
+            var questions = JSON.parse(jsonString.replace(/&quot;/g, '"'));
+            var totalQuestions = '@Model.Count';
+
+            $("#btnNext").click(function () {
+                debugger;
+                if (cnt < totalQuestions) {
+                    $("#lblQuestionNo").text(questions[cnt].QuestionId);
+                    $("#lblQuestionText").text(questions[cnt].QuestionText);
+                }
+                cnt = cnt + 1;
+            });
+
+            var recorder;
+            var video = document.querySelector('video');
+
+            $("#divInterview").hide();
+            //alert("working");
+
+            $("#btnStartInterview").click(function () {
+                $("#divInterview").show();
+                $("#divWelcome").hide();
+
+                $("#btnStartInterview").hide();
+
+                captureCamera(function (camera) {
+                    video.muted = true;
+                    video.volume = 0;
+                    video.srcObject = camera;
+                    recorder = RecordRTC(camera, {
+                        type: 'video'
+                    });
+                    recorder.startRecording();
+                    // release camera on stopRecording
+                    recorder.camera = camera;
+                    //document.getElementById('btn-stop-recording').disabled = false;
+                });
+            });
+
+            $("#btnFinishInterview").click(function () {
+
+                $("#btnFinishInterview").hide();
+
+                recorder.stopRecording(stopRecordingCallback);
+            });
+
+
+            function captureCamera(callback) {
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function (camera) {
+                    callback(camera);
+                }).catch(function (error) {
+                    alert('Unable to capture your camera. Please check console logs.');
+                    console.error(error);
+                });
+            }
+
+            function stopRecordingCallback() {
+                video.src = video.srcObject = null;
+                video.muted = false;
+                video.volume = 1;
+                debugger;
+                video.src = URL.createObjectURL(recorder.getBlob());
+                PostBlob(recorder.getBlob());
+
+                recorder.camera.stop();
+                recorder.destroy();
+                recorder = null;
+            }
+
+            //document.getElementById('btn-start-recording').onclick = function () {
+            //    this.disabled = true;
+            //    captureCamera(function (camera) {
+            //        video.muted = true;
+            //        video.volume = 0;
+            //        video.srcObject = camera;
+            //        recorder = RecordRTC(camera, {
+            //            type: 'video'
+            //        });
+            //        recorder.startRecording();
+            //        // release camera on stopRecording
+            //        recorder.camera = camera;
+            //        document.getElementById('btn-stop-recording').disabled = false;
+            //    });
+            //};
+
+            //document.getElementById('btn-stop-recording').onclick = function () {
+            //    this.disabled = true;
+            //    recorder.stopRecording(stopRecordingCallback);
+            //};
+
+            function PostBlob(blob) {
+                // FormData
+                debugger;
+                var formData = new FormData();
+                formData.append('video-filename', 'myVideoFile');
+                formData.append('video-blob', blob);
+
+                $.ajax({
+                    type: "POST",
+                    url: '/VideoInterview/PostRecordedAudioVideo',
+                    data: formData,
+                    processData: false,
+                    contentType: false
+                }).done(function (data) {
+                    console.log(data);
+                });
+            }
+
+        });
+    </script>
+}
+<h1>Welcome</h1>
+<div id="divWelcome">
+    <div>
+        Total Questions : @Model.Count
+    </div>
+    <div>
+        <button id="btnStartInterview" class="btn btn-primary">Start Interview</button>
+    </div>
+</div>
+<br>
+<div id="divInterview">
+    <div>
+        <button id="btnFinishInterview" class="btn btn-primary">Finish Interview</button>
+
+    </div>
+    <hr />
+    <video controls autoplay playsinline></video>
+    <hr />
+
+    <div class="form-group">
+        <h3><label id="lblQuestionNo">Question 1</label></h3>
+        <hr />
+        <h3><label id="lblQuestionText">Question 1</label></h3>
+        <hr />
+        <button id="btnNext" class="btn btn-primary">Next Question</button>
+    </div>
+</div>

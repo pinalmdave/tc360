@@ -1,0 +1,84 @@
+﻿@model TechScreen.Models.ScreeningCandidateModel
+
+@{
+    ViewData["Title"] = "AddCandidate";
+}
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+
+            //$("#btnAddCandidate2").click(function (){
+
+            //});
+
+            //$("#btnAddCandidate").click(function () {
+            //    $.ajax({
+            //        url: '/Screening/AddScreeningCandidate',
+            //        contentType: 'application/html; charset=utf-8',
+            //        type: 'GET',
+            //        dataType: 'html',
+            //        success: function (result) {
+            //            debugger;
+            //            $('#divAddNewCandidate').append(result);
+            //        },
+            //        error: function (xhr, status) {
+            //            debugger;
+            //            alert(status);
+            //        }
+            //    });
+            //});
+        });
+    </script>
+}
+
+<h2>Add Candidate for Screening</h2>
+
+
+<form id="frmAddCandidates" asp-action="PostCandidates" asp-controller="Screening">
+
+    @Html.HiddenFor(m=> m.ScreeningId)
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <label>Candidate First Name</label>
+                <input type="text" asp-for="CandidateFirstName" class="form-control">
+                <span asp-validation-for="CandidateFirstName" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label>Candidate Last Name</label>
+                <input type="text" asp-for="CandidateLastName" class="form-control">
+                <span asp-validation-for="CandidateLastName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">&nbsp;</div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Candiate Email</label>
+                <input type="text" asp-for="CandidateEmail" class="form-control">
+                <span asp-validation-for="CandidateEmail" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label>Candiate Contact No</label>
+                <input type="text" asp-for="CandidatePhone" class="form-control">
+                <span asp-validation-for="CandidatePhone" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">&nbsp;</div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+                <button>Submit</button>
+                <button>+Candidates</button>
+                <button>Cancel</button>
+            </div>
+
+        </div>
+
+    </div>
+</form> 
