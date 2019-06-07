@@ -4,14 +4,37 @@
     ViewData["Title"] = "_AssignReviewer";
 }
 
+<script>
+    //alert("hi");
+</script>
 
-<div class="container">
-    <div class="row">
-        @foreach(var item in Model)
-        {
-            <div>
-                   @item.FirstName
-            </div>
-        }
-    </div>
-</div>
+        <table class="table table-striped" id="tblAssign">
+            <thead>
+                <tr>
+                    <th>Reviewer Id</th>
+                    <th>Reviewer Name</th>
+                    <th>Phone1</th>
+                    <th>Phone2</th>
+                    <th>Email</th>
+                    <th>Technology Stack</th>
+                    <th>Technologies</th>
+                    <th>Assign</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>@item.ReviewerId</td>
+                    <td>@item.FirstName  @item.LastName</td>
+                    <td>@item.Phone1</td>
+                    <td>@item.Phone2</td>
+                    <td>@item.Email</td>
+                    <td>.NET</td>
+                    <td>ASP.NET</td>
+                    <td><input type="checkbox" value="@item.ReviewerId" /></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    

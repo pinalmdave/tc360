@@ -29,7 +29,7 @@ namespace TechScreen.Controllers
             return View(screening);
         }
 
-        public IActionResult AssignReviewer()
+        public IActionResult OpenReviewerModal()
         {
             var reviewers = this.screeningRepository.GetReviewers();
 
@@ -43,6 +43,15 @@ namespace TechScreen.Controllers
             var screenings = this.screeningRepository.GetUserScreening(email);
 
             return this._mapper.Map<List<ScreeningModel>>(screenings);
+        }
+
+        public IActionResult AssignReviewer(int screeningId, int candidateId, int reviewerId)
+        {
+            var userName = User.Claims.Where(x => x.Type == "emails").FirstOrDefault().Value;
+
+            var screenings = this.screeningRepository.AssignReviewer(screeningId, candidateId, reviewerId, userName);
+
+            return Ok(); 
         }
     }
 }

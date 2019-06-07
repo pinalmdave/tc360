@@ -21,6 +21,21 @@ namespace TechScreen.Services
             this._mapper = mapper;
         }
 
+        public List<ScreeningModel> GetReviewerScreenings(int reviewerId)
+        {
+            try
+            {
+                var result = context.Screening.Where(s => s.ScreeningCandidate.Any(sc => sc.ReviewerId == reviewerId)).Include(dc => dc.DetailedCandidateScreening).ToList();
+                                 
+                return this._mapper.Map(result, new List<ScreeningModel>());
+            }
+
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+
         public List<ReviewerModel> GetReviewers()
         {
             var reviewers = this.context.Reviewer
@@ -46,6 +61,26 @@ namespace TechScreen.Services
         {
             var userId = this.context.User.Where(x => x.UserEmail == userEmail).FirstOrDefault().UserId;
             return userId;
+        }
+
+        public bool AssignReviewer(int screeningId, int candidateId, int reviewerId, string userName)
+        {
+            try
+            {
+                var screeningCandidate = this.context.ScreeningCandidate.Where(x => x.ScreeningId == screeningId && x.CandidateId == candidateId).FirstOrDefault();
+                screeningCandidate.ReviewerId = reviewerId;
+
+                screeningCandidate.LastUpdated = DateTime.Now;
+                screeningCandidate.LastUpdatedBy = userName;
+                this.context.ScreeningCandidate.Update(screeningCandidate);
+                Save();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
+
         }
 
         public List<ScreeningQuestions> GetScreeningQuestions(string candidateCode)

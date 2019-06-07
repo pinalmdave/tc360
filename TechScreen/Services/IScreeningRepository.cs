@@ -24,5 +24,9 @@ namespace TechScreen.Services
 
         List<ScreeningQuestions> GetScreeningQuestions(string candidateCode);
 
+        bool AssignReviewer(int screeningId, int candidateId, int reviewerId, string userName);
+
+        List<ScreeningModel> GetReviewerScreenings(int reviewerId);
+
     }
 }
