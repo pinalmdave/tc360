@@ -2,12 +2,12 @@
 @using Newtonsoft.Json;
 
 @{
-       var jsonObject = JsonConvert.SerializeObject(Model, Formatting.None,
-                           new JsonSerializerSettings()
-                           {
-                               ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                           });
-    }
+    var jsonObject = JsonConvert.SerializeObject(Model, Formatting.None,
+        new JsonSerializerSettings()
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        });
+}
 
 @section Scripts
     {
@@ -18,53 +18,69 @@
     <script>
         $(document).ready(function () {
 
-            var cnt = 0;
             var jsonString = '@jsonObject';
             var questions = JSON.parse(jsonString.replace(/&quot;/g, '"'));
             var totalQuestions = '@Model.Count';
-
-            $("#btnNext").click(function () {
-                debugger;
-                if (cnt < totalQuestions) {
-                    $("#lblQuestionNo").text(questions[cnt].QuestionId);
-                    $("#lblQuestionText").text(questions[cnt].QuestionText);
-                }
-                cnt = cnt + 1;
-            });
-
             var recorder;
             var video = document.querySelector('video');
 
+            $("#btnStartInterview").hide();
+            $("#btnFinishInterview").hide();
             $("#divInterview").hide();
-            //alert("working");
+            $("#divComplete").hide();
 
-            $("#btnStartInterview").click(function () {
+            $("#btnCheckWebcam").click(function (e) {
+                e.preventDefault();
+                $("#btnStartInterview").show();
+                $("#btnCheckWebcam").hide();
                 $("#divInterview").show();
-                $("#divWelcome").hide();
+                $("#btnNext").hide();
 
+                startRecording();
+            });
+
+            $("#btnStartInterview").click(function (e) {
+
+                e.preventDefault();
+
+                recorder.stopRecording(stopTestingCallback);
+
+                startRecording();
+
+                $("#divInterview").show();
                 $("#btnStartInterview").hide();
+                $("#btnCheckWebcam").hide();
+                $("#btnNext").show();
 
-                captureCamera(function (camera) {
-                    video.muted = true;
-                    video.volume = 0;
-                    video.srcObject = camera;
-                    recorder = RecordRTC(camera, {
-                        type: 'video'
-                    });
-                    recorder.startRecording();
-                    // release camera on stopRecording
-                    recorder.camera = camera;
-                    //document.getElementById('btn-stop-recording').disabled = false;
-                });
+                $("#lblQuestionNo").text("Question " + questions[0].QuestionId + " of " + totalQuestions);
+                $("#lblQuestionText").text(questions[0].QuestionText);
             });
 
-            $("#btnFinishInterview").click(function () {
+            var cnt = 1;
+            $("#btnNext").click(function (e) {
 
-                $("#btnFinishInterview").hide();
+                e.preventDefault();
 
+                if (cnt < totalQuestions) {
+                    $("#lblQuestionNo").text("Question " + questions[cnt].QuestionId + " of " + totalQuestions);
+                    $("#lblQuestionText").text(questions[cnt].QuestionText);
+                    recorder.stopRecording(stopRecordingCallback);
+                    startRecording();
+                }
+                cnt = cnt + 1;
+
+                if (cnt == totalQuestions) {
+                    $("#btnNext").hide();
+                    $("#btnFinishInterview").show();
+                }
+            });
+
+            $("#btnFinishInterview").click(function (e) {
+                e.preventDefault();
                 recorder.stopRecording(stopRecordingCallback);
+                $("#divStart").hide();
+                $("#divComplete").show();
             });
-
 
             function captureCamera(callback) {
                 navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then(function (camera) {
@@ -73,14 +89,37 @@
                     alert('Unable to capture your camera. Please check console logs.');
                     console.error(error);
                 });
+        }
+
+            function startRecording() {
+            captureCamera(function (camera) {
+                video.muted = true;
+                video.volume = 0;
+                video.srcObject = camera;
+                recorder = RecordRTC(camera, {
+                    type: 'video'
+                });
+
+                recorder.startRecording();
+                recorder.camera = camera;
+            });
+        }
+
+            function stopTestingCallback() {
+                video.src = video.srcObject = null;
+                video.muted = false;
+                video.volume = 1;
+                recorder.camera.stop();
+                recorder.destroy();
+                recorder = null;
             }
 
             function stopRecordingCallback() {
                 video.src = video.srcObject = null;
                 video.muted = false;
                 video.volume = 1;
-                debugger;
-                video.src = URL.createObjectURL(recorder.getBlob());
+                //debugger;
+                //video.src = URL.createObjectURL(recorder.getBlob());
                 PostBlob(recorder.getBlob());
 
                 recorder.camera.stop();
@@ -88,30 +127,8 @@
                 recorder = null;
             }
 
-            //document.getElementById('btn-start-recording').onclick = function () {
-            //    this.disabled = true;
-            //    captureCamera(function (camera) {
-            //        video.muted = true;
-            //        video.volume = 0;
-            //        video.srcObject = camera;
-            //        recorder = RecordRTC(camera, {
-            //            type: 'video'
-            //        });
-            //        recorder.startRecording();
-            //        // release camera on stopRecording
-            //        recorder.camera = camera;
-            //        document.getElementById('btn-stop-recording').disabled = false;
-            //    });
-            //};
-
-            //document.getElementById('btn-stop-recording').onclick = function () {
-            //    this.disabled = true;
-            //    recorder.stopRecording(stopRecordingCallback);
-            //};
-
             function PostBlob(blob) {
-                // FormData
-                debugger;
+
                 var formData = new FormData();
                 formData.append('video-filename', 'myVideoFile');
                 formData.append('video-blob', blob);
@@ -126,34 +143,53 @@
                     console.log(data);
                 });
             }
-
         });
     </script>
 }
-<h1>Welcome</h1>
-<div id="divWelcome">
-    <div>
-        Total Questions : @Model.Count
+
+<div class="container" id="divStart">
+    <div class="row">
+        <label id="lblTotalQuestions">Total Questions: @Model.Count</label>
     </div>
-    <div>
-        <button id="btnStartInterview" class="btn btn-primary">Start Interview</button>
+
+    <div class="row">&nbsp;</div>
+
+    <div id="divInterview">
+        <div class="row">
+            <video controls autoplay playsinline></video>
+        </div>
+
+        <div class="row">&nbsp;</div>
+
+        <div class="row" id="divQuestions">
+            <div class="form-group">
+                <h3><label id="lblQuestionNo"></label></h3>
+                <hr />
+                <h3><label id="lblQuestionText"></label></h3>
+                <hr />
+                <button id="btnNext" class="btn btn-primary">Next Question</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group">
+            <button id="btnCheckWebcam" class="btn btn-primary">Test your webcam and microphone</button>
+            <button id="btnStartInterview" class="btn btn-primary">Start Interview</button>
+            <button id="btnFinishInterview" class="btn btn-primary">Finish Interview</button>
+            <hr />
+        </div>
     </div>
 </div>
-<br>
-<div id="divInterview">
-    <div>
-        <button id="btnFinishInterview" class="btn btn-primary">Finish Interview</button>
 
-    </div>
-    <hr />
-    <video controls autoplay playsinline></video>
-    <hr />
+<div class="container" id="divComplete">
 
-    <div class="form-group">
-        <h3><label id="lblQuestionNo">Question 1</label></h3>
-        <hr />
-        <h3><label id="lblQuestionText">Question 1</label></h3>
-        <hr />
-        <button id="btnNext" class="btn btn-primary">Next Question</button>
+    <div class="row">
+        <h1>Thanks for your time to attend the screening. We will send the feedback to the hiring company</h1>
     </div>
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <h1>For security reasons. We recommand please close this browser window now</h1>
+    </div>
+
 </div>

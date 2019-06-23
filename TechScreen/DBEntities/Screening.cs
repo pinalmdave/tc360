@@ -11,10 +11,13 @@ namespace TechScreen.DBEntities
             DetailedCandidateScreening = new HashSet<DetailedCandidateScreening>();
             ScreeningCandidate = new HashSet<ScreeningCandidate>();
             ScreeningQuestions = new HashSet<ScreeningQuestions>();
+            Transaction = new HashSet<Transaction>();
         }
 
         public int ScreeningId { get; set; }
         public int? UserId { get; set; }
+        public int? ReviewerId { get; set; }
+        public string Status { get; set; }
         public string HiringCompanyName { get; set; }
         public string JobRequisitionNumber { get; set; }
         public string IsJobDescOptSelected { get; set; }
@@ -33,6 +36,7 @@ namespace TechScreen.DBEntities
         public string LastUpdatedBy { get; set; }
 
         public virtual JobCategories JobCat { get; set; }
+        public virtual Reviewer Reviewer { get; set; }
         public virtual Technologies Tech { get; set; }
         public virtual TechnologyStack TechStack { get; set; }
         public virtual User User { get; set; }
@@ -40,5 +44,6 @@ namespace TechScreen.DBEntities
         public virtual ICollection<DetailedCandidateScreening> DetailedCandidateScreening { get; set; }
         public virtual ICollection<ScreeningCandidate> ScreeningCandidate { get; set; }
         public virtual ICollection<ScreeningQuestions> ScreeningQuestions { get; set; }
+        public virtual ICollection<Transaction> Transaction { get; set; }
     }
 }

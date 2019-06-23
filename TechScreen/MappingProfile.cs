@@ -12,6 +12,7 @@ namespace TechScreen
     {
         public MappingProfile()
         {
+            //DBEntity to Model
             CreateMap<Client, ClientModel>();
             CreateMap<CustomScreeningQuestions, CustomScreeningQuestionsModel>();
             CreateMap<DetailedCandidateScreening, DetailedCandidateScreeningModel>();
@@ -19,18 +20,24 @@ namespace TechScreen
             CreateMap<Reviewer, ReviewerModel>();
             CreateMap<ReviewerTechnologies, ReviewerTechnologiesModel>();
             CreateMap<Screening, ScreeningModel>();
-
             CreateMap<ScreeningCandidate, ScreeningCandidateModel>();
-            CreateMap<ScreeningCandidateModel, ScreeningCandidate>()
-                .ForMember(dest => dest.Reviewer, opt => opt.Ignore())
-                .ForMember(dest => dest.Screening, opt => opt.Ignore())
-                .ForMember(dest => dest.DetailedCandidateScreening, opt => opt.Ignore());
-
             CreateMap<ScreeningDetail, ScreeningDetailModel>();
             CreateMap<ScreeningQuestions, ScreeningQuestionsModel>();
             CreateMap<Technologies, TechnologiesModel>();
             CreateMap<TechnologyStack, TechnologyStackModel>();
             CreateMap<User, UserModel>();
+            CreateMap<Transaction, TransactionModel>();
+
+            //Model to DBEntities
+            CreateMap<ScreeningModel, Screening>();
+            CreateMap<TransactionModel, Transaction>();
+
+            CreateMap<ScreeningQuestionsModel, ScreeningQuestions>();
+
+            CreateMap<ScreeningCandidateModel, ScreeningCandidate>()
+               .ForMember(dest => dest.Reviewer, opt => opt.Ignore())
+               .ForMember(dest => dest.Screening, opt => opt.Ignore())
+               .ForMember(dest => dest.DetailedCandidateScreening, opt => opt.Ignore());
         }
     }
 }

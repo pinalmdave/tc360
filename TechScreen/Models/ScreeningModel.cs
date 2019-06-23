@@ -10,6 +10,9 @@ namespace TechScreen.Models
     {
         public int ScreeningId { get; set; }
         public int? UserId { get; set; }
+        public int? ReviewerId { get; set; }
+        public string Status { get; set; }
+
 
         [Required]
         [Display(Name = "Hiring Company Name")]
@@ -48,5 +51,6 @@ namespace TechScreen.Models
         public ICollection<DetailedCandidateScreeningModel> DetailedCandidateScreening { get; set; }
         public ICollection<ScreeningCandidateModel> ScreeningCandidate { get; set; }
         public ICollection<ScreeningQuestionsModel> ScreeningQuestions { get; set; }
+        public ICollection<TransactionModel> Transaction { get; set; }
     }
 }

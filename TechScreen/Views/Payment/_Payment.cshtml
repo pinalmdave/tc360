@@ -1,0 +1,14 @@
+﻿<div>
+    <form action="/Payment/Processing" method="POST">
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="pk_test_GOvRlE5eQx3cnL537c7FbDGe0003D0r2Rq"
+                data-amount="@ViewBag.PaymentAmount"
+                data-name="TechScreen360"
+                data-description="Candidate Screening Payment"
+                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                data-locale="en"
+                data-zip-code="true"
+                data-label="Make Payment">
+        </script>
+    </form>
+</div>

@@ -22,7 +22,6 @@ namespace TechScreen.Controllers
 
         private IScreeningRepository screeningRepository;
 
-
         public ScreeningController(TechscreenDBContext context, IScreeningRepository _screeningRepository, IMapper mapper)
         {
             _context = context;
@@ -81,8 +80,11 @@ namespace TechScreen.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostJobRequirement(ScreeningViewModel screeningViewModel)
-        {
+        public async Task<IActionResult> PostJobRequirement(ScreeningViewModel screeningViewModel)
+        {  
+            int transactionId = 0;
+            int screeningId = 0;
+
             var userEmail = User.Claims.First(x => x.Type == "emails").Value;
 
             var candidateData = Request.Form["candidates"];
@@ -91,7 +93,7 @@ namespace TechScreen.Controllers
             var screeningCandidateModel = JsonConvert.DeserializeObject<List<ScreeningCandidateModel>>(candidateData);
             foreach(var item in screeningCandidateModel)
             {
-                item.ScreeningStatus = "P"; // i.e. Pending
+                item.ScreeningStatus = EnumScreeningStatus.AwaitingScreeningInvitation.ToString();
                 item.CreatedBy = userEmail;
                 item.CreatedOn = DateTime.Now;
             }
@@ -112,17 +114,36 @@ namespace TechScreen.Controllers
                     screening.CreatedBy = userEmail;
                     screening.UserId = this._context.User.First(x => x.UserEmail == userEmail).UserId;
                     screening.CreatedOn = DateTime.Now;
+                    screening.Status = EnumScreeningStatus.SubmitQuestions.ToString();
 
                     _context.Add(screening);
-                     _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
+
+                    screeningId = screening.ScreeningId;
+
+                    //Transaction
+                    var transactionModel = new TransactionModel();
+
+                    transactionModel.ScreeningId = screeningId;
+                    transactionModel.AmountBilled = screeningCandidateModel.Count() * 49 + 49;
+                    transactionModel.PaymentStatus = "Processing";
+                    transactionModel.LastUpdated = DateTime.Now;
+                    transactionModel.LastUpdatedBy = userEmail;
+
+                    var transaction = _mapper.Map(transactionModel, new Transaction());
+
+                    _context.Add(transaction);
+
+                    await _context.SaveChangesAsync();
+
+                    transactionId = transaction.TransactionId;
                 }
                 catch (Exception ex)
                 {
                     throw;
                 }
-                return RedirectToAction("Index", "ClientDashboard");
             }
-            return View("CreateJobRequirement", screeningViewModel);
+              return Json(Url.Action("MakePayment", "Payment",new{@id= transactionId }));
         }
 
         public IActionResult AddCandidate(int id)

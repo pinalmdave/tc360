@@ -19,16 +19,15 @@ namespace TechScreen.Controllers
         CloudBlobContainer cloudBlobContainer = null;
         CloudBlobClient cloudBlobClient = null;
 
-       // public static Queue<DBEntities.ScreeningQuestions> staticQueScreeningQuestions;
+        static int questionCounter = 0;
+        static string candidateCode = "";
 
         private IScreeningRepository screeningRepository;
-
 
         public VideoInterviewController(IScreeningRepository _screeningRepository)
         {
             this.screeningRepository = _screeningRepository;
         }
-
 
         public IActionResult Index()
         {
@@ -39,44 +38,18 @@ namespace TechScreen.Controllers
         [HttpPost]
         public IActionResult VerifyCandidateCode(CandidateCodeViewModel candidateCodeViewModel)
         {
-            if(string.IsNullOrEmpty(candidateCodeViewModel.CandidateCode)) return View("Index"); //Return invalid screeningcode error message
+            if (string.IsNullOrEmpty(candidateCodeViewModel.CandidateCode)) return View("Index"); //Return invalid screeningcode error message
 
             var lstScreeningQuestions = screeningRepository.GetScreeningQuestions(candidateCodeViewModel.CandidateCode);
 
             if (lstScreeningQuestions == null) return View("Index"); //Return invalid screeningcode error message
 
-            //Queue<ScreeningQuestions> queScreeningQuestions = new Queue<ScreeningQuestions>();
+            candidateCode = candidateCodeViewModel.CandidateCode;
 
-            //foreach (var item in lstScreeningQuestions)
-            //{
-            //    queScreeningQuestions.Enqueue(item);
-            //}
-
-            //staticQueScreeningQuestions = queScreeningQuestions;
-            
-            //var json1 = JsonConvert.SerializeObject(lstScreeningQuestions);
-
-
-
-            //var qText1 = queScreeningQuestions.Dequeue().QuestionText;
-            //var qText2 = queScreeningQuestions.Dequeue().QuestionText;
-            //var qText3 = queScreeningQuestions.Dequeue().QuestionText;
-            //var qText4 = queScreeningQuestions.Dequeue().QuestionText;
-            //var qText5 = queScreeningQuestions.Dequeue().QuestionText;
+            ViewBag.CandidateCode = candidateCodeViewModel.CandidateCode;
 
             return View("Interview", lstScreeningQuestions);
         }
-
-        //public IActionResult GetQuestion()
-        //{
-        //    var question = staticQueScreeningQuestions.Dequeue();
-            
-        //    var screenQuestion = new ScreeningQuestions();
-        //    screenQuestion.QuestionId = question.QuestionId;
-        //    screenQuestion.QuestionText = question.QuestionText;
-
-        //    return Json(JsonConvert.SerializeObject(screenQuestion));
-        //}
 
         private void ConnectToAzureStorage()
         {
@@ -109,33 +82,47 @@ namespace TechScreen.Controllers
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> PostRecordedAudioVideo()
         {
-            var file = Request.Form.Files[0];
+            questionCounter = questionCounter + 1;
 
-            if (file.Length > 0)
+            var cd = candidateCode + "-" + questionCounter.ToString();
+
+            try
             {
-                var memoryStream = new MemoryStream();
+                var file = Request.Form.Files[0];
 
-                await file.CopyToAsync(memoryStream); //this.Request.Body.CopyToAsync(memoryStream);
-                memoryStream.Seek(0, SeekOrigin.Begin);
-                await UploadAsync(memoryStream);
+                if (file.Length > 0)
+                {
+                    var memoryStream = new MemoryStream();
 
+                    await file.CopyToAsync(memoryStream); //this.Request.Body.CopyToAsync(memoryStream);
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    await UploadAsync(memoryStream, cd);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
             return Json("Success or failure response");
         }
 
         [RequestSizeLimit(100_000_000)]
-        private async Task UploadAsync(MemoryStream stream)
+        private async Task UploadAsync(MemoryStream stream, string candidateCode)
         {
             ConnectToAzureStorage();
             try
             {
-                CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference("3");
+                CloudBlockBlob cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(candidateCode);
 
                 await cloudBlockBlob.UploadFromStreamAsync(stream);
             }
             catch (StorageException ex)
             {
                 Console.WriteLine("Error returned from the service: {0}", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
 

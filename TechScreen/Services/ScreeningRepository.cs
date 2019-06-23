@@ -21,11 +21,69 @@ namespace TechScreen.Services
             this._mapper = mapper;
         }
 
+        public bool CreateScreeningQuestions(int screeningId, string userEmail, List<ScreeningQuestionsModel> lstScreeningQuestionsModel)
+        {
+            try
+            {
+                var screening = this.context.Screening.Include(sc=> sc.ScreeningCandidate).Include(sq=> sq.ScreeningQuestions).Where(x => x.ScreeningId == screeningId).FirstOrDefault();
+
+                screening.LastUpdated = DateTime.Now;
+                screening.LastUpdatedBy = userEmail;
+                screening.Status = EnumScreeningStatus.AwaitingCandidateResponse.ToString();
+
+                foreach (var candidate in screening.ScreeningCandidate)
+                {
+                    candidate.ScreeningStatus = EnumScreeningStatus.AwaitingCandidateResponse.ToString();
+                    candidate.LastUpdated = DateTime.Now;
+                    candidate.LastUpdatedBy = userEmail;
+                    candidate.CandidateSignInCode = Guid.NewGuid().ToString();
+                }
+
+                screening.ScreeningQuestions = this._mapper.Map(lstScreeningQuestionsModel , new List<ScreeningQuestions>());
+
+                this.context.Screening.Update(screening);
+                Save();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        public ScreeningModel GetScreeningDetailToCreateQuestions(int screeningId)
+        {
+            try
+            {
+                var result = context.Screening.Include(r => r.ScreeningQuestions).Where(x => x.ScreeningId == screeningId).FirstOrDefault();
+
+                return this._mapper.Map(result, new ScreeningModel());
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public ScreeningModel GetScreeningDetailForUpdate(int screeningId)
+        {
+            try
+            {
+                var result = context.Screening.Include(r => r.ScreeningQuestions).Include(sc=>sc.ScreeningCandidate).Where(x => x.ScreeningId == screeningId).FirstOrDefault();
+
+                return this._mapper.Map(result, new ScreeningModel());
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public List<ScreeningModel> GetReviewerScreenings(int reviewerId)
         {
             try
             {
-                var result = context.Screening.Where(s => s.ScreeningCandidate.Any(sc => sc.ReviewerId == reviewerId)).Include(dc => dc.DetailedCandidateScreening).ToList();
+                var result = context.Screening.Include(r => r.ScreeningCandidate).Where(x => x.ReviewerId == reviewerId).ToList();
                                  
                 return this._mapper.Map(result, new List<ScreeningModel>());
             }
@@ -63,7 +121,7 @@ namespace TechScreen.Services
             return userId;
         }
 
-        public bool AssignReviewer(int screeningId, int candidateId, int reviewerId, string userName)
+        public bool AssignCandidateToReviewer(int screeningId, int candidateId, int reviewerId, string userName)
         {
             try
             {
@@ -80,8 +138,74 @@ namespace TechScreen.Services
             {
                 return false;
             }
+        }
+
+        public bool AssignScreeningToReviewer(int screeningId, int reviewerId, string userName)
+        {
+            try
+            {
+                var screening = this.context.Screening.Where(x => x.ScreeningId == screeningId).Include(sc=> sc.ScreeningCandidate).FirstOrDefault();
+                screening.ReviewerId = reviewerId;
+                screening.LastUpdated = DateTime.Now;
+                screening.LastUpdatedBy = userName;
+
+                var screeningCandidates = screening.ScreeningCandidate.ToList(); 
+
+                foreach(var candidate in screeningCandidates)
+                {
+                    candidate.ReviewerId = reviewerId;
+                    candidate.LastUpdated = DateTime.Now;
+                    candidate.LastUpdatedBy = userName;
+                }
+
+                this.context.Screening.Update(screening);
+
+                Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool AssignScreening(int screeningId, int reviewerId, string userName)
+        {
+            try
+            {
+                var screeningCandidate = this.context.ScreeningCandidate.Where(x => x.ScreeningId == screeningId).FirstOrDefault();
+                screeningCandidate.ReviewerId = reviewerId;
+
+                screeningCandidate.LastUpdated = DateTime.Now;
+                screeningCandidate.LastUpdatedBy = userName;
+                this.context.ScreeningCandidate.Update(screeningCandidate);
+                Save();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
 
         }
+
+        public TransactionModel GetTransaction(int transactionId)
+        {
+            var transaction = this.context.Transaction.Where(t => t.TransactionId == transactionId).FirstOrDefault();
+            var transactionModel = this._mapper.Map(transaction, new TransactionModel());
+            return transactionModel;
+        }
+
+        public bool UpdateTransaction(int transactionId, string status)
+        {
+            var transaction = this.context.Transaction.Where(t => t.TransactionId == transactionId).FirstOrDefault();
+            transaction.PaymentStatus = status;
+            transaction.LastUpdated = DateTime.Now;
+            this.context.Transaction.Update(transaction);
+            var isSaved = Save();
+            return isSaved;
+        }
+
 
         public List<ScreeningQuestions> GetScreeningQuestions(string candidateCode)
         {

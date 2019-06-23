@@ -16,13 +16,13 @@
 
             reviewerId = 0;
 
-            $("#btnAssign").click(function () {
+            $("#btnAssignScreening").click(function () {
 
                 cnt = 0;
                 $('#tblAssign').find('input[type="checkbox"]:checked').each(function () {
                     cnt = cnt + 1;
                     if (cnt > 1) {
-                        alert("Candidate cannot be assigned to multiple reviwers for screening.")
+                        alert("Cannot assign to multiple reviwers to screening.")
                         return;
                     }
                     reviewerId = $(this).val();
@@ -30,18 +30,18 @@
 
                 arrCandiateAndScreeningId = $("#hdnScreeningAndCandidateId").val().split("&");
 
-                candidateId = arrCandiateAndScreeningId[0];
-                screeningId = arrCandiateAndScreeningId[1];
+                screeningId = arrCandiateAndScreeningId[0];
+                candidateId = arrCandiateAndScreeningId[1];
 
-                alert("candidateId: " + candidateId + " screeningId: " + screeningId);
+                //alert("candidateId: " + candidateId + " screeningId: " + screeningId);
 
 
                 $.ajax({
-                    url: "/Admin/AssignReviewer",
-                    data: { screeningId: screeningId, candidateId: candidateId, reviewerId: reviewerId }
+                    url: "/Admin/AssignScreeningToReviewer",
+                    data: { screeningId: screeningId, reviewerId: reviewerId }
                 }).done(function () {
                     //$(this).addClass("done");
-                    $('#assignReviewerModal').modal('toggle');
+                    $('#assignScreeningToReviewerModal').modal('toggle');
                 });
 
             });
@@ -54,18 +54,40 @@
 
                 $("#hdnScreeningAndCandidateId").val(hiddenVal);
 
-                var url = $('#assignReviewerModal').data('url');
+                var url = $('#assignCandidateToReviewerModal').data('url');
 
                 $.get(url, function (data) {
                     $('#reviewerContainer').html(data);
 
-                    $('#assignReviewerModal').modal('show');
+                    $('#assignCandidateToReviewerModal').modal('show');
                 });
 
                 e.preventDefault();
 
                 return false;
             });
+
+            $(".assignScreeningButton").click(function (e) {
+
+                //alert("thi val: " + $(this).val());
+
+                var hiddenVal = $(this).val()
+
+                $("#hdnScreeningAndCandidateId").val(hiddenVal);
+
+                var url = $('#assignScreeningToReviewerModal').data('url');
+
+                $.get(url, function (data) {
+                    $('#reviewerContainer').html(data);
+
+                    $('#assignScreeningToReviewerModal').modal('show');
+                });
+
+                e.preventDefault();
+
+                return false;
+            });
+
         });
     </script>
 
@@ -129,6 +151,23 @@
                         <span id="cSpecialReq">@screen.SpecialRequest</span>
                     </div>
                 </div>
+                <div class="row">&nbsp;</div>
+                @if (screen.ReviewerId == null)
+                {
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <button class="btn btn-link assignScreeningButton" value="@screen.ScreeningId&0">Assign Screening To Reviewer</button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <button class="btn btn-link reAssignScreeningButton" value="@screen.ScreeningId">ReAssign Screening</button>
+                    </div>
+                </div>
+                }
                 <div class="row"><hr /></div>
                 <div class="row"><h2>Candidates</h2></div>
                 <div class="row">&nbsp;&nbsp;</div>
@@ -194,7 +233,7 @@
 
 
 
-<div class="modal fade" id='assignReviewerModal' data-url='@Url.Action("OpenReviewerModal")' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+@*<div class="modal fade" id='assignCandidateToReviewerModal' data-url='@Url.Action("OpenReviewerModal")' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-xl" style="width:1200px;">
         <div class="modal-content">
             <div class="modal-header">
@@ -210,6 +249,27 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="btnAssign">Assign Reviewer</button>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<div class="modal fade" id='assignScreeningToReviewerModal' data-url='@Url.Action("OpenReviewerModal")' tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="width:1200px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalCenterTitle">Assign Reviewer</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id='reviewerContainer'>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnAssignScreening">Assign Reviewer</button>
             </div>
         </div>
     </div>

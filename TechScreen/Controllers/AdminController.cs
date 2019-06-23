@@ -21,7 +21,6 @@ namespace TechScreen.Controllers
             this._mapper = mapper;
         }
 
-
         public IActionResult Index()
         {
             var screening = GetScreenings();
@@ -45,13 +44,22 @@ namespace TechScreen.Controllers
             return this._mapper.Map<List<ScreeningModel>>(screenings);
         }
 
-        public IActionResult AssignReviewer(int screeningId, int candidateId, int reviewerId)
+        public IActionResult AssignCandidateToReviewer(int screeningId, int candidateId, int reviewerId)
         {
             var userName = User.Claims.Where(x => x.Type == "emails").FirstOrDefault().Value;
 
-            var screenings = this.screeningRepository.AssignReviewer(screeningId, candidateId, reviewerId, userName);
+            var screenings = this.screeningRepository.AssignCandidateToReviewer(screeningId, candidateId, reviewerId, userName);
 
             return Ok(); 
+        }
+
+        public IActionResult AssignScreeningToReviewer(int screeningId, int reviewerId)
+        {
+            var userName = User.Claims.Where(x => x.Type == "emails").FirstOrDefault().Value;
+
+            var screenings = this.screeningRepository.AssignScreeningToReviewer(screeningId, reviewerId, userName);
+
+            return Ok();
         }
     }
 }

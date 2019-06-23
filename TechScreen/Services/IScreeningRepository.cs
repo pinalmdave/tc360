@@ -24,9 +24,20 @@ namespace TechScreen.Services
 
         List<ScreeningQuestions> GetScreeningQuestions(string candidateCode);
 
-        bool AssignReviewer(int screeningId, int candidateId, int reviewerId, string userName);
+        bool AssignCandidateToReviewer(int screeningId, int candidateId, int reviewerId, string userName);
 
         List<ScreeningModel> GetReviewerScreenings(int reviewerId);
 
+        bool AssignScreeningToReviewer(int screeningId, int reviewerId, string userName);
+
+        ScreeningModel GetScreeningDetailToCreateQuestions(int screeningId);
+
+        bool CreateScreeningQuestions(int screeningId, string userEmail, List<ScreeningQuestionsModel> lstScreeningQuestionsModel);
+
+        ScreeningModel GetScreeningDetailForUpdate(int screeningId);
+
+        TransactionModel GetTransaction(int transactionId);
+
+        bool UpdateTransaction(int transactionId, string status);
     }
 }

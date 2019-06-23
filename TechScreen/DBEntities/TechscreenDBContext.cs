@@ -27,6 +27,7 @@ namespace TechScreen.DBEntities
         public virtual DbSet<Technologies> Technologies { get; set; }
         public virtual DbSet<TechnologyScreeningQuestions> TechnologyScreeningQuestions { get; set; }
         public virtual DbSet<TechnologyStack> TechnologyStack { get; set; }
+        public virtual DbSet<Transaction> Transaction { get; set; }
         public virtual DbSet<User> User { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -267,10 +268,19 @@ namespace TechScreen.DBEntities
 
                 entity.Property(e => e.SpecialRequest).IsUnicode(false);
 
+                entity.Property(e => e.Status)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.JobCat)
                     .WithMany(p => p.Screening)
                     .HasForeignKey(d => d.JobCatId)
                     .HasConstraintName("FK_Screening_JobCategories");
+
+                entity.HasOne(d => d.Reviewer)
+                    .WithMany(p => p.Screening)
+                    .HasForeignKey(d => d.ReviewerId)
+                    .HasConstraintName("FK_Screening_Reviewer");
 
                 entity.HasOne(d => d.Tech)
                     .WithMany(p => p.Screening)
@@ -396,6 +406,24 @@ namespace TechScreen.DBEntities
                 entity.Property(e => e.TechSuiteName)
                     .HasMaxLength(500)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.Property(e => e.LastUpdated).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PaymentStatus)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.Screening)
+                    .WithMany(p => p.Transaction)
+                    .HasForeignKey(d => d.ScreeningId)
+                    .HasConstraintName("FK_Transaction_Screening");
             });
 
             modelBuilder.Entity<User>(entity =>

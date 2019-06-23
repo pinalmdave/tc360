@@ -1,0 +1,87 @@
+﻿@model List<TechScreen.Models.ScreeningModel>
+@{
+    ViewData["Title"] = "Index";
+}
+@section Scripts
+    {
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+           // $("#tblReviewer").DataTable();
+        });
+    </script>
+}
+<div class="container">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-12">
+            @foreach (var screen in Model)
+            {
+                <table id="tblReviewer" name="tblReviewer" class="table table-striped screeningTable">
+                    <thead>
+                        <tr>
+                            <th>Date Created</th>
+                            <th>Job Category</th>
+                            <th>Job Title</th>
+                            <th>Tech Stack</th>
+                            <th>Technologies</th>
+                            <th>screen Questions Provided</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@screen.CreatedOn</td>
+                            <td>@screen.JobCat</td>
+                            <td>@screen.JobTitle</td>
+                            <td>@screen.TechStack</td>
+                            <td>@screen.Tech</td>
+                            @if (screen.JobScreeningQuestions != null)
+                            {
+                                <td>Yes</td>
+                            }
+                            else
+                            {
+                                <td>No</td>
+                            }
+                            <td>@screen.Status</td>
+                            <td><a href="/Reviewer/CreateScreeningQuestions/@screen.ScreeningId">Create Questions</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <hr />
+
+                @if (screen.ScreeningCandidate != null && screen.ScreeningCandidate.Count > 0)
+                {
+                    <table id="tblCandidate" name="tblCandidate" class="table table-striped candidateTable">
+                        <thead>
+                            <tr>
+                                <th>Candidate Name</th>
+                                <th>Screening Status</th>
+                                <th>Status Updated</th>
+                                <th>Overall Score</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var candiate in screen.ScreeningCandidate)
+                            {
+                                <tr>
+                                    <td>@candiate.CandidateFirstName @candiate.CandidateLastName</td>
+                                    <td>@candiate.ScreeningStatus</td>
+                                    <td>@candiate.LastUpdated</td>
+                                    <td>@candiate.OverAllScore</td>
+                                    <td>
+                                        <a href="#">Review Candidate Response</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+        </div>
+    </div>
+</div>
