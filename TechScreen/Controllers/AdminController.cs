@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TechScreen.DBEntities;
 using TechScreen.Models;
 using TechScreen.Services;
+using TechScreen.ViewModels;
 
 namespace TechScreen.Controllers
 {
@@ -23,9 +25,14 @@ namespace TechScreen.Controllers
 
         public IActionResult Index()
         {
-            var screening = GetScreenings();
+            var adminVm = GetAdminViewModel();
 
-            return View(screening);
+            var jsonObject = JsonConvert.SerializeObject(adminVm, Formatting.None,
+            new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+            return View(adminVm);
         }
 
         public IActionResult OpenReviewerModal()
@@ -35,13 +42,19 @@ namespace TechScreen.Controllers
             return PartialView("_AssignReviewer", reviewers);
         }
 
-        private List<ScreeningModel> GetScreenings()
+        private AdminVM GetAdminViewModel()
         {
-            var email = User.Claims.Where(x => x.Type == "emails").FirstOrDefault().Value;
+            var screenings = this.screeningRepository.GetAllScreeningSummaryForAdmin();
+            var adminVm = new AdminVM();
+            adminVm.lstScreening = screenings;
+            return adminVm;
+        }
 
-            var screenings = this.screeningRepository.GetUserScreening(email);
+        public IActionResult GetScreeningDetailForAdmin(int id)
+        {
+            var screening = this.screeningRepository.GetScreeningDetailForAdmin(id);
 
-            return this._mapper.Map<List<ScreeningModel>>(screenings);
+            return Ok();
         }
 
         public IActionResult AssignCandidateToReviewer(int screeningId, int candidateId, int reviewerId)

@@ -1,87 +1,165 @@
 ﻿@model List<TechScreen.Models.ScreeningModel>
-@{
-    ViewData["Title"] = "Index";
-}
-@section Scripts
+@section Inlinecss
     {
-    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
-    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <style>
+        .modal-backdrop {
+            z-index: 3;
+        }
+    </style>
+}
+
+@section Scripts{
     <script>
         $(document).ready(function () {
-
-           // $("#tblReviewer").DataTable();
         });
     </script>
-}
-<div class="container">
-    <div class="row" style="margin-top: 20px;">
-        <div class="col-12">
-            @foreach (var screen in Model)
-            {
-                <table id="tblReviewer" name="tblReviewer" class="table table-striped screeningTable">
-                    <thead>
-                        <tr>
-                            <th>Date Created</th>
-                            <th>Job Category</th>
-                            <th>Job Title</th>
-                            <th>Tech Stack</th>
-                            <th>Technologies</th>
-                            <th>screen Questions Provided</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>@screen.CreatedOn</td>
-                            <td>@screen.JobCat</td>
-                            <td>@screen.JobTitle</td>
-                            <td>@screen.TechStack</td>
-                            <td>@screen.Tech</td>
-                            @if (screen.JobScreeningQuestions != null)
-                            {
-                                <td>Yes</td>
-                            }
-                            else
-                            {
-                                <td>No</td>
-                            }
-                            <td>@screen.Status</td>
-                            <td><a href="/Reviewer/CreateScreeningQuestions/@screen.ScreeningId">Create Questions</a></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <hr />
 
-                @if (screen.ScreeningCandidate != null && screen.ScreeningCandidate.Count > 0)
-                {
-                    <table id="tblCandidate" name="tblCandidate" class="table table-striped candidateTable">
-                        <thead>
-                            <tr>
-                                <th>Candidate Name</th>
-                                <th>Screening Status</th>
-                                <th>Status Updated</th>
-                                <th>Overall Score</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var candiate in screen.ScreeningCandidate)
-                            {
-                                <tr>
-                                    <td>@candiate.CandidateFirstName @candiate.CandidateLastName</td>
-                                    <td>@candiate.ScreeningStatus</td>
-                                    <td>@candiate.LastUpdated</td>
-                                    <td>@candiate.OverAllScore</td>
-                                    <td>
-                                        <a href="#">Review Candidate Response</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
-            }
+}
+
+<input type="hidden" name="hdnScreeningAndCandidateId" value="" id="hdnScreeningAndCandidateId" />
+
+<div class="app-page-title">
+    <div class="page-title-wrapper">
+        <div class="page-title-heading">
+            <div class="page-title-icon">
+                <i class="pe-7s-home icon-gradient bg-mean-fruit">
+                </i>
+            </div>
+            <div>
+                Reviewer Dashboard
+            </div>
         </div>
     </div>
 </div>
+
+
+@foreach (var screen in Model)
+{
+    <div class="main-card mb-3 card">
+        <div class="card-header" style="background-color:lightgray">
+            @if (screen.Status == "Submitted" || screen.Status == "New")
+            {
+                <p style="color:red">New Interview Request</p>
+            }
+            else
+            {
+                <p>Interview Request</p>
+            }
+
+        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label>Hiring Company / Client Name</label>
+                    <span>@screen.HiringCompanyName</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Job Title</label>
+                    <span>@screen.JobTitle</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Job Requisition #</label>
+                    <span>@screen.JobRequisitionNumber</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label>Area of Expertise</label>
+                    <span>@screen.JobCat.JobCatDesc</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Required Skills</label>
+                    <span>@screen.RequiredSkills</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Optional Skills</label>
+                    <span>@screen.OptionalSkills</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <label>Job Description</label>
+                    <span>@screen.JobDesc</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <label>Screening Questions Provided</label>
+                    <span>@screen.JobScreeningQuestions</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <label>Special Request to the Interviewer</label>
+                    <span>@screen.SpecialRequest</span>
+                </div>
+            </div>
+            @if (screen.ReviewerStatus == "Assigned")
+            {
+                <div class="form-row">
+                    <div class="col-md-12 mb-3 pull-right">
+                        <a href="/Reviewer/CreateScreeningQuestions/@screen.ScreeningId" class="btn btn-danger">Create Interview Questions</a>
+                    </div>
+                </div>
+            }
+            <div class="form-row">
+                @if (screen.ScreeningCandidate != null && screen.ScreeningCandidate.Count > 0)
+                {
+
+                    <div class="col-md-12">
+                        <div class="main-card mb-3 card">
+                            <div class="card-header" style="background-color:lavender">
+                                Candidates
+                            </div>
+                            <div class="table-responsive">
+                                <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="tblScreeningCandidates">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Candidate Name</th>
+                                            <th class="text-center">Screening Status</th>
+                                            <th class="text-center">Score</th>
+                                            <th class="text-center">Last Updated</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var candidate in screen.ScreeningCandidate)
+                                        {
+                                            if (@candidate != null)
+                                            {
+                                               
+
+                                                <tr>
+                                                    <td class="text-center">@candidate.CandidateFirstName @candidate.CandidateLastName</td>
+                                                    <td class="text-center">
+                                                        <div class="badge badge-warning">@candidate.ScreeningStatus</div>
+                                                    </td>
+                                                    <td class="text-center">@candidate.OverallScore</td>
+                                                    <td class="text-center">@candidate.LastUpdated</td>
+                                                    <td class="text-center">
+                                                        @if (candidate.ScreeningStatus == "CandidateResponseReceived")
+                                                        {
+                                                            <a href="/Reviewer/ReviewInterview?candidateId=@candidate.CandidateId&screeningId=@screen.ScreeningId" class="btn btn-primary">Review Response</a>
+                                                        }
+                                                        else if (candidate.ScreeningStatus == "Completed")
+                                                        {
+                                                            <a href="/Reviewer/ScoreCard?id=@candidate.CandidateId" class="btn btn-primary">View Score Card</a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="d-block text-center card-footer">
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+        </div>
+}
+

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using TechScreen.DBEntities;
 using TechScreen.Models;
 using AutoMapper;
+using TechScreen.ViewModels;
+using TechScreen.Utilities;
+using SendGrid.Helpers.Mail;
+using SendGrid;
 
 namespace TechScreen.Services
 {
@@ -29,6 +33,8 @@ namespace TechScreen.Services
 
                 screening.LastUpdated = DateTime.Now;
                 screening.LastUpdatedBy = userEmail;
+                screening.ReviewerStatus= EnumScreeningStatus.Screening_Invitation_Sent.ToString();
+                screening.AdminStatus = EnumScreeningStatus.Screening_Invitation_Sent.ToString();
                 screening.Status = EnumScreeningStatus.AwaitingCandidateResponse.ToString();
 
                 foreach (var candidate in screening.ScreeningCandidate)
@@ -43,6 +49,32 @@ namespace TechScreen.Services
 
                 this.context.Screening.Update(screening);
                 Save();
+
+                //Send  email to candidates
+
+                foreach(var candidate in screening.ScreeningCandidate)
+                {
+                    var sendGridMessage = new SendGridMessage();
+                    sendGridMessage.SetSubject("Video Interview Request From " + screening.HiringCompanyName);
+                    sendGridMessage.AddTo(candidate.CandidateEmail);
+                    sendGridMessage.SetFrom(new EmailAddress("noreply@techscreen360.com", "TechScreen360"));
+                    sendGridMessage.AddContent(MimeType.Html, "<p>Dear" +candidate.CandidateFirstName + " " + candidate.CandidateLastName +"" +
+                        ",</br></br>" +
+                        "You have received Video Interview Request from :"+ screening.HiringCompanyName + "</br></br>" +
+                        "<b>Please follow below instruction to complete your video interview:</b></b>" +
+                        "1. This is a video interview so make sure to test your laptop's webcam and audio device is working fine.</br>" +
+                        "2. For best results, please use <b>latest Google Chrome Browser</b>" +
+                        "3. <b>Click on the link below:</br></br>" +
+                        "4. https://www.techscreen360.com/jobcandidate" +
+                        "5.  Your sign in Code is :" + candidate.CandidateSignInCode + "  .The sign in code will expire 24 hours after you receive this email.</br></br>" +
+                        "Best of luck for your interview. If you come across any issue, please contact InterviewSupport@techscreen360.com" +
+                        "</p>"
+                        );
+
+                    EmailUtility.SendGridMessage(sendGridMessage).Wait();
+                }
+              
+
                 return true;
             }
             catch(Exception ex)
@@ -55,7 +87,9 @@ namespace TechScreen.Services
         {
             try
             {
-                var result = context.Screening.Include(r => r.ScreeningQuestions).Where(x => x.ScreeningId == screeningId).FirstOrDefault();
+                var result = context.Screening.Include(r => r.ScreeningQuestions)
+                    .Include(j => j.JobCat)
+                    .Where(x => x.ScreeningId == screeningId).FirstOrDefault();
 
                 return this._mapper.Map(result, new ScreeningModel());
             }
@@ -69,7 +103,10 @@ namespace TechScreen.Services
         {
             try
             {
-                var result = context.Screening.Include(r => r.ScreeningQuestions).Include(sc=>sc.ScreeningCandidate).Where(x => x.ScreeningId == screeningId).FirstOrDefault();
+                var result = context.Screening
+                    .Include(r => r.ScreeningQuestions)
+                    .Include(sc=>sc.ScreeningCandidate)
+                    .Where(x => x.ScreeningId == screeningId).FirstOrDefault();
 
                 return this._mapper.Map(result, new ScreeningModel());
             }
@@ -83,9 +120,12 @@ namespace TechScreen.Services
         {
             try
             {
-                var result = context.Screening.Include(r => r.ScreeningCandidate).Where(x => x.ReviewerId == reviewerId).ToList();
+                var lstScreening = context.Screening
+                                            .Include(s => s.ScreeningCandidate)
+                                            .Include(j => j.JobCat)
+                                            .Where(x => x.ReviewerId == reviewerId).OrderByDescending(o=> o.CreatedOn).ToList();
                                  
-                return this._mapper.Map(result, new List<ScreeningModel>());
+                return this._mapper.Map(lstScreening, new List<ScreeningModel>());
             }
 
             catch(Exception ex)
@@ -108,10 +148,33 @@ namespace TechScreen.Services
             Save();
         }
 
-        public List<Screening> GetUserScreening(string userEmail)
+        public List<Screening> GetAllScreeningSummaryForAdmin()
+        {   
+            var lstUserScreening = context.Screening
+                                            .Include(sc => sc.ScreeningCandidate)
+                                            .Include(j=> j.JobCat)
+                                            .Include(r=>r.Reviewer)
+                                            .OrderByDescending(x=> x.CreatedOn).ToList();
+            return lstUserScreening;
+        }
+        public Screening GetScreeningDetailForAdmin(int screeningId)
         {
-            var userId = GetUserId(userEmail);
-            var lstUserScreening = context.Screening.Include(s=> s.ScreeningCandidate).Where(x => x.UserId == userId).ToList();
+            var screening = context.Screening
+                                            .Include(sc => sc.ScreeningCandidate)
+                                            .Include(j => j.JobCat)
+                                            .Where(s => s.ScreeningId == screeningId)
+                                            .OrderByDescending(x => x.CreatedOn).FirstOrDefault();
+            return screening;
+        }
+
+        public List<Screening> GetUserScreening(string email)
+        {
+            var userId = GetUserId(email);
+            var lstUserScreening = context.Screening
+                                            .Include(s => s.ScreeningCandidate)
+                                            .Include(j => j.JobCat)
+                                            .Where(x=> x.UserId == userId)
+                                            .OrderByDescending(x => x.CreatedOn).ToList();
             return lstUserScreening;
         }
 
@@ -148,6 +211,9 @@ namespace TechScreen.Services
                 screening.ReviewerId = reviewerId;
                 screening.LastUpdated = DateTime.Now;
                 screening.LastUpdatedBy = userName;
+                screening.Status = EnumScreeningStatus.InProcess.ToString();
+                screening.AdminStatus = EnumScreeningStatus.Awaiting_Reviewer_Response.ToString();
+                screening.ReviewerStatus = EnumScreeningStatus.Assigned.ToString();
 
                 var screeningCandidates = screening.ScreeningCandidate.ToList(); 
 
@@ -156,6 +222,7 @@ namespace TechScreen.Services
                     candidate.ReviewerId = reviewerId;
                     candidate.LastUpdated = DateTime.Now;
                     candidate.LastUpdatedBy = userName;
+                    candidate.ScreeningStatus = EnumScreeningStatus.InProcess.ToString();
                 }
 
                 this.context.Screening.Update(screening);
@@ -206,18 +273,22 @@ namespace TechScreen.Services
             return isSaved;
         }
 
-
-        public List<ScreeningQuestions> GetScreeningQuestions(string candidateCode)
+        public bool CandiateScreeningCompleted(string candidateCode)
         {
-            //var screening = context.Screening.Where(x => x.CandidateSignInCode == candidateCode.Trim()).FirstOrDefault();
+            try
+            {
+                var screeningCandidate = this.context.ScreeningCandidate.Where(x => x.CandidateSignInCode == candidateCode).FirstOrDefault();
+                screeningCandidate.ScreeningStatus = EnumScreeningStatus.CandidateResponseReceived.ToString();
+                screeningCandidate.CandidateSignInCode = "";
 
-            //if (screening == null) return null;
-
-            //var lstScreeningQuestions = context.ScreeningQuestions.Where(x => x.ScreeningId == screening.ScreeningId).ToList();
-
-            //return lstScreeningQuestions;
-            return null;
-
+                this.context.ScreeningCandidate.Update(screeningCandidate);
+                var isSaved = Save();
+                return isSaved;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
 
         public void CancelScreening(int screeningId, string userId)
@@ -264,5 +335,75 @@ namespace TechScreen.Services
             return (this.context.SaveChanges() >= 0);
         }
 
+        public CandidateScreeningInfoVM GetCandidateInfoForSignUp(string candidateSignInCode, string validateSignInCode)
+        {
+            var screeningCandidate = context.ScreeningCandidate.Where(x => x.CandidateSignInCode == candidateSignInCode.Trim()).FirstOrDefault();
+
+            if (screeningCandidate == null) return null;
+
+            var vm = new CandidateScreeningInfoVM();
+
+            if (validateSignInCode=="Y")
+            {
+                var lstScreeningQuestions = context.ScreeningQuestions.Where(x => x.ScreeningId == screeningCandidate.ScreeningId).ToList();
+                vm.ScreeningQuestions = lstScreeningQuestions;
+            }
+            else
+            {   
+                vm.CandidateId = screeningCandidate.CandidateId.ToString();
+                vm.ScreeningId = screeningCandidate.ScreeningId.ToString();
+            }
+            return vm;
+        }
+
+        public List<ScreeningQuestions> GetScreeningQuestions(int candidateId, int screeningId)
+        {
+            var questions = context.ScreeningQuestions.Where(x => x.ScreeningId == screeningId)
+                .OrderBy(q=>q.QuestionId)
+                .ToList();
+            return questions;
+        }
+
+        public void SubmitScreeningFeedback(ScreeningCandidate screeningCandidate, List<DetailedCandidateScreening> detailedCandidateScreening)
+        {
+            try
+            {
+                var candidate = context.ScreeningCandidate.Where(x => x.CandidateId == screeningCandidate.CandidateId).FirstOrDefault();
+
+                candidate.OverallScore = screeningCandidate.OverallScore;
+                candidate.TechnicalCommunication = screeningCandidate.TechnicalCommunication;
+                candidate.VerbalCommunication = screeningCandidate.VerbalCommunication;
+                candidate.CandidateEnthusiasm = screeningCandidate.CandidateEnthusiasm;
+                candidate.ReviewerComments = screeningCandidate.ReviewerComments;
+                candidate.ScreeningStatus = EnumScreeningStatus.Completed.ToString();
+
+                context.ScreeningCandidate.Update(candidate);
+                context.SaveChanges();
+
+                context.DetailedCandidateScreening.AddRange(detailedCandidateScreening);
+                context.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+
+            }
+        }
+
+        public ScoreCardVM GetCandidateScoreCard(int candidateId)
+        {
+            var candidate = this.context.ScreeningCandidate.Where(x => x.CandidateId == candidateId).FirstOrDefault();
+            var lstDetailedCandidateScreening = this.context.DetailedCandidateScreening.Where(x => x.CandidateId == candidateId).ToList();
+
+            var vm = new ScoreCardVM();
+            vm.lstDetailedCandidateScreening = lstDetailedCandidateScreening;
+            vm.OverallScore = candidate.OverallScore;
+            vm.TechnicalCommunication = candidate.TechnicalCommunication;
+            vm.VerbalCommunication = candidate.VerbalCommunication;
+            vm.CandidateEnthusiasm = candidate.CandidateEnthusiasm;
+            vm.ReviewerComments = candidate.ReviewerComments;
+            vm.FeedbackDate = candidate.LastUpdated.ToString();
+
+            return vm;
+        }
     }
 }

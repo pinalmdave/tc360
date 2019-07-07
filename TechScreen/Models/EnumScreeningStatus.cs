@@ -23,7 +23,22 @@ namespace TechScreen.Models
         [Display(Name = "Candidate Response Received")]
         CandidateResponseReceived,
 
-        [Display(Name = "Review Completed")]
-        ReviewCompleted
+        [Display(Name = "Completed")]
+        Completed,
+
+        Submitted,
+
+        Cancelled,
+
+        New,
+        
+        InProcess,
+
+        [Display(Name = "Awaiting Admin Response")]
+        Awaiting_Reviewer_Response,
+
+        Assigned,
+
+        Screening_Invitation_Sent
     }
 }

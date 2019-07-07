@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,6 @@ namespace TechScreen.ViewModels
     public class ScreeningViewModel
     {
         public ScreeningModel Screening { get; set; }
-        
 
         public ScreeningCandidateModel ScreeningCandidateModel { get; set; }
         public JobCategoriesModel JobCategories { get; set; }

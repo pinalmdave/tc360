@@ -125,10 +125,19 @@ namespace TechScreen.DBEntities
                     .HasMaxLength(500)
                     .IsUnicode(false);
 
+                entity.Property(e => e.SkillName)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.Candidate)
                     .WithMany(p => p.DetailedCandidateScreening)
                     .HasForeignKey(d => d.CandidateId)
                     .HasConstraintName("FK_DetailedCandidateScreening_ScreeningCandidate");
+
+                entity.HasOne(d => d.Reviewer)
+                    .WithMany(p => p.DetailedCandidateScreening)
+                    .HasForeignKey(d => d.ReviewerId)
+                    .HasConstraintName("FK_DetailedCandidateScreening_Reviewer");
 
                 entity.HasOne(d => d.Screening)
                     .WithMany(p => p.DetailedCandidateScreening)
@@ -139,6 +148,8 @@ namespace TechScreen.DBEntities
             modelBuilder.Entity<JobCategories>(entity =>
             {
                 entity.HasKey(e => e.JobCatId);
+
+                entity.Property(e => e.JobCatId).ValueGeneratedNever();
 
                 entity.Property(e => e.JobCatDesc)
                     .HasMaxLength(200)
@@ -226,25 +237,42 @@ namespace TechScreen.DBEntities
 
             modelBuilder.Entity<Screening>(entity =>
             {
+                entity.Property(e => e.AdminStatus)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.CreatedBy)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.Property(e => e.CreatedOn).HasColumnType("datetime");
 
+                entity.Property(e => e.ExperienceLevel)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.HiringCompanyName)
                     .HasMaxLength(200)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IsCustomQuestionOptSelected)
+                entity.Property(e => e.IsClientScreeningQ)
                     .HasMaxLength(1)
                     .IsUnicode(false);
 
-                entity.Property(e => e.IsJobDescOptSelected)
+                entity.Property(e => e.IsClientScreeningQuploaded)
+                    .HasColumnName("IsClientScreeningQUploaded")
+                    .HasMaxLength(1)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IsJobDescUploaded)
                     .HasMaxLength(1)
                     .IsUnicode(false);
 
                 entity.Property(e => e.JobDesc).IsUnicode(false);
+
+                entity.Property(e => e.JobLocation)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.JobRequisitionNumber)
                     .HasMaxLength(200)
@@ -266,6 +294,18 @@ namespace TechScreen.DBEntities
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
+                entity.Property(e => e.OptionalSkills)
+                    .HasMaxLength(2000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.RequiredSkills)
+                    .HasMaxLength(2000)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ReviewerStatus)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.SpecialRequest).IsUnicode(false);
 
                 entity.Property(e => e.Status)
@@ -281,16 +321,6 @@ namespace TechScreen.DBEntities
                     .WithMany(p => p.Screening)
                     .HasForeignKey(d => d.ReviewerId)
                     .HasConstraintName("FK_Screening_Reviewer");
-
-                entity.HasOne(d => d.Tech)
-                    .WithMany(p => p.Screening)
-                    .HasForeignKey(d => d.TechId)
-                    .HasConstraintName("FK_Screening_Technologies");
-
-                entity.HasOne(d => d.TechStack)
-                    .WithMany(p => p.Screening)
-                    .HasForeignKey(d => d.TechStackId)
-                    .HasConstraintName("FK_Screening_TechnologyStack");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Screening)
@@ -341,8 +371,6 @@ namespace TechScreen.DBEntities
                 entity.Property(e => e.ScreeningStatus)
                     .HasMaxLength(50)
                     .IsUnicode(false);
-
-                entity.Property(e => e.VideoUrl).IsUnicode(false);
 
                 entity.HasOne(d => d.Reviewer)
                     .WithMany(p => p.ScreeningCandidate)

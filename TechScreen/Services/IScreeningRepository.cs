@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using TechScreen.DBEntities;
 using TechScreen.Models;
+using TechScreen.ViewModels;
 
 namespace TechScreen.Services
 {
@@ -14,15 +15,17 @@ namespace TechScreen.Services
 
         int GetUserId(string userEmail);
 
+        CandidateScreeningInfoVM GetCandidateInfoForSignUp(string candidateSignInCode, string validateSignInCode);
+
         bool IsNewClient(string email);
 
         void CancelScreening(int screeningId, string userId);
 
-        List<Screening> GetUserScreening(string userEmail);
+        List<Screening> GetAllScreeningSummaryForAdmin();
+
+        List<Screening> GetUserScreening(string email);
 
         List<ReviewerModel> GetReviewers();
-
-        List<ScreeningQuestions> GetScreeningQuestions(string candidateCode);
 
         bool AssignCandidateToReviewer(int screeningId, int candidateId, int reviewerId, string userName);
 
@@ -39,5 +42,15 @@ namespace TechScreen.Services
         TransactionModel GetTransaction(int transactionId);
 
         bool UpdateTransaction(int transactionId, string status);
+
+        bool CandiateScreeningCompleted(string candidateCode);
+
+        List<ScreeningQuestions> GetScreeningQuestions(int candidateId, int screeningId);
+
+        void SubmitScreeningFeedback(ScreeningCandidate screeningCandidate, List<DetailedCandidateScreening> detailedCandidateScreening);
+
+        ScoreCardVM GetCandidateScoreCard(int candidateId);
+
+        Screening GetScreeningDetailForAdmin(int screeningId);
     }
 }

@@ -1,0 +1,374 @@
+﻿@model TechScreen.ViewModels.CandidateScreeningInfoVM
+@{
+    Layout = null;
+}
+@section Inlinecss
+{
+    <!-- Begin shared CSS values -->
+    <style class="shared-css" type="text/css">
+
+        .t {
+            -webkit-transform-origin: bottom left;
+            -ms-transform-origin: bottom left;
+            transform-origin: bottom left;
+            -webkit-transform: scale(0.25);
+            -ms-transform: scale(0.25);
+            transform: scale(0.25);
+            z-index: 2;
+            position: absolute;
+            white-space: pre;
+            overflow: visible;
+        }
+
+            .t::-moz-selection {
+                color: transparent;
+                background: rgba(0, 106, 173, 0.4);
+            }
+
+            .t::selection {
+                color: transparent;
+                background: rgba(0, 106, 173, 0.4);
+            }
+    </style>
+    <!-- End shared CSS values -->
+    <!-- Begin inline CSS -->
+    <style type="text/css">
+
+
+        #t1_1 {
+            left: 35px;
+            bottom: 1043px;
+            letter-spacing: -0.1px;
+            word-spacing: 0.3px;
+        }
+
+        #t2_1 {
+            left: 35px;
+            bottom: 963px;
+            letter-spacing: 0.1px;
+            word-spacing: -0.1px;
+        }
+
+        #t3_1 {
+            left: 35px;
+            bottom: 866px;
+            letter-spacing: 0.2px;
+        }
+
+        #t4_1 {
+            left: 35px;
+            bottom: 838px;
+            letter-spacing: 0.3px;
+        }
+
+        #t5_1 {
+            left: 35px;
+            bottom: 811px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.2px;
+        }
+
+        #t6_1 {
+            left: 264px;
+            bottom: 750px;
+            word-spacing: 0.3px;
+        }
+
+        #t7_1 {
+            left: 35px;
+            bottom: 676px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.1px;
+        }
+
+        #t8_1 {
+            left: 250px;
+            bottom: 581px;
+            letter-spacing: 0.4px;
+        }
+
+        #t9_1 {
+            left: 134px;
+            bottom: 533px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.3px;
+        }
+
+        #ta_1 {
+            left: 134px;
+            bottom: 503px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.6px;
+        }
+
+        #tb_1 {
+            left: 134px;
+            bottom: 474px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.4px;
+        }
+
+        #tc_1 {
+            left: 134px;
+            bottom: 444px;
+            letter-spacing: 0.1px;
+        }
+
+        #td_1 {
+            left: 677px;
+            bottom: 581px;
+            letter-spacing: 0.2px;
+        }
+
+        #te_1 {
+            left: 569px;
+            bottom: 533px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.5px;
+        }
+
+        #tf_1 {
+            left: 569px;
+            bottom: 503px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.4px;
+        }
+
+        #tg_1 {
+            left: 569px;
+            bottom: 474px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.4px;
+        }
+
+        #th_1 {
+            left: 301px;
+            bottom: 324px;
+            letter-spacing: -0.1px;
+            word-spacing: 0.3px;
+        }
+
+        #ti_1 {
+            left: 35px;
+            bottom: 249px;
+            letter-spacing: -0.1px;
+            word-spacing: 0.2px;
+        }
+
+        #tj_1 {
+            left: 168px;
+            bottom: 202px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.3px;
+        }
+
+        #tk_1 {
+            left: 168px;
+            bottom: 176px;
+            letter-spacing: 0.1px;
+        }
+
+        #tl_1 {
+            left: 167px;
+            bottom: 83px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.5px;
+        }
+
+        #tm_1 {
+            left: 167px;
+            bottom: 57px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.4px;
+        }
+
+        #tn_1 {
+            left: 167px;
+            bottom: 32px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.3px;
+        }
+
+        #to_1 {
+            left: 610px;
+            bottom: 194px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.3px;
+        }
+
+        #tp_1 {
+            left: 610px;
+            bottom: 168px;
+            letter-spacing: 0.2px;
+        }
+
+        #tq_1 {
+            left: 610px;
+            bottom: 143px;
+            letter-spacing: 0.1px;
+        }
+
+        #tr_1 {
+            left: 607px;
+            bottom: 77px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.4px;
+        }
+
+        #ts_1 {
+            left: 607px;
+            bottom: 51px;
+            letter-spacing: 0.1px;
+            word-spacing: 0.6px;
+        }
+
+        .s1_1 {
+            FONT-SIZE: 146.7px;
+            FONT-FAMILY: LiberationSans_15;
+            color: rgba(255, 255, 255, 0);
+        }
+
+        .s2_1 {
+            FONT-SIZE: 268.9px;
+            FONT-FAMILY: LiberationSans_15;
+            color: rgba(255, 255, 255, 0);
+        }
+
+        .s3_1 {
+            FONT-SIZE: 91.6px;
+            FONT-FAMILY: LiberationSans_15;
+            color: rgba(255, 255, 255, 0);
+        }
+
+        .s4_1 {
+            FONT-SIZE: 128.4px;
+            FONT-FAMILY: LiberationSans-Bold_x;
+            color: rgba(255, 255, 255, 0);
+        }
+
+        .s5_1 {
+            FONT-SIZE: 91.6px;
+            FONT-FAMILY: LiberationSans-Bold_x;
+            color: rgba(255, 255, 255, 0);
+        }
+
+        .s6_1 {
+            FONT-SIZE: 140.5px;
+            FONT-FAMILY: LiberationSans_15;
+            color: rgba(255, 255, 255, 0);
+        }
+
+        .s7_1 {
+            FONT-SIZE: 85.6px;
+            FONT-FAMILY: LiberationSans_15;
+            color: rgba(255, 255, 255, 0);
+        }
+    </style>
+    <!-- End inline CSS -->
+    <!-- Begin embedded font definitions -->
+    <style id="fonts1" type="text/css">
+
+
+
+    </style>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            height: 100vh;
+        }
+
+        #login .container #login-row #login-column #login-box {
+            margin-top: 220px;
+            max-width: 600px;
+            height: 220px;
+            border: 1px solid #9C9C9C;
+            background-color: #EAEAEA;
+        }
+
+            #login .container #login-row #login-column #login-box #login-form {
+                padding: 20px;
+            }
+
+                #login .container #login-row #login-column #login-box #login-form #register-link {
+                    margin-top: -85px;
+                }
+    </style>
+    <!-- End embedded font definitions -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+}
+
+
+
+<div id="p1" style="overflow: hidden; position: relative; background-color: white; width: 935px; height: 1210px;">
+
+
+    <!-- Begin page background -->
+    <div id="pg1Overlay" style="width:100%; height:100%; position:absolute; z-index:1; background-color:rgba(0,0,0,0); -webkit-user-select: none;"></div>
+    <div id="pg1" style="-webkit-user-select: none;"><object width="935" height="1210" data="1/1.svg" type="image/svg+xml" id="pdf1" style="width:935px; height:1210px; -moz-transform:scale(1); z-index: 0;"></object></div>
+    <!-- End page background -->
+    <!-- Begin text definitions (Positioned/styled in CSS) -->
+    <div id="t1_1" class="t s1_1">How to ace a</div>
+    <div id="t2_1" class="t s2_1">Skype interview</div>
+    <div id="t3_1" class="t s3_1">Online job interviews have become the norm, with more than 70% of </div>
+    <div id="t4_1" class="t s3_1">companies </div>
+    <div id="t5_1" class="t s3_1">conducting them regularly. Here’s how to ace your next one.</div>
+    <div id="t6_1" class="t s4_1">1. Perfect your profile pic</div>
+    <div id="t7_1" class="t s5_1">Make sure your Skype profile photo is appropriate. </div>
+    <div id="t8_1" class="t s6_1">Do</div>
+    <div id="t9_1" class="t s7_1">Use a hi-res, well-lit photo</div>
+    <div id="ta_1" class="t s7_1">Dress professionally</div>
+    <div id="tb_1" class="t s7_1">Use a solid-colored, light</div>
+    <div id="tc_1" class="t s7_1">background</div>
+    <div id="td_1" class="t s6_1">Don’t</div>
+    <div id="te_1" class="t s7_1">Leave your profile photo blank</div>
+    <div id="tf_1" class="t s7_1">Use an icon instead of a photo</div>
+    <div id="tg_1" class="t s7_1">Use a selfie or group shot</div>
+    <div id="th_1" class="t s4_1">2. Upgrade your tech</div>
+    <div id="ti_1" class="t s5_1">A poor connection can ruin your prospects.</div>
+    <div id="tj_1" class="t s7_1">Make sure you have enough</div>
+    <div id="tk_1" class="t s7_1">bandwidth</div>
+    <div id="tl_1" class="t s7_1">Use a wired connection or</div>
+    <div id="tm_1" class="t s7_1">locate as close to your</div>
+    <div id="tn_1" class="t s7_1">router as possible</div>
+    <div id="to_1" class="t s7_1">Download the latest </div>
+    <div id="tp_1" class="t s7_1">software</div>
+    <div id="tq_1" class="t s7_1">updates</div>
+    <div id="tr_1" class="t s7_1">Use a hi-res camera and a</div>
+    <div id="ts_1" class="t s7_1">reliable headset or speaker</div>
+
+    <!-- End text definitions -->
+
+
+</div>
+
+
+
+
+<form asp-action="VerifyCandidateCode">
+    <div id="login">
+        <div class="container">
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" class="col-md-12">
+                        <h3 class="text-center text-info">Login</h3>
+                        <div class="form-group">
+                            <label for="username" class="text-info align">Please Enter Your SignIn Code:</label><br>
+                            <input type="text" asp-for="CandidateSignInCode" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" name="submit" class="btn btn-info btn-md float-right" value="submit">
+                            <div><label style="color:red">@ViewBag.InvalidCandidateCode</label></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+

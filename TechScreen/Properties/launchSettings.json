@@ -12,6 +12,7 @@
       "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
+        "SENDGRID_APIKEY": "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",
         "AZURE_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=techscreenstorageacct;AccountKey=y3/Xz/kKGoAAQRvvNLL3NVnw7emv5ffo7sDgULmMPWnXWUyJBvAAeNOs6rvRma6Ly84xoURd3ZMWgkLpOTDGJA==;EndpointSuffix=core.windows.net",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

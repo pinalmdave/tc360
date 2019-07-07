@@ -1,0 +1,398 @@
+﻿@model TechScreen.ViewModels.ScoreCardVM
+
+@{ 
+    var overallScoreServer = Model.OverallScore * 10;
+    var techCom = Model.TechnicalCommunication * 10;
+    var verCom = Model.VerbalCommunication * 10;
+    var enthu = Model.CandidateEnthusiasm * 10;
+    var prof = 50;
+}
+
+@section Scripts{
+    <script src="~/js/chart.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            function SetChartColors() {
+                //Technical Communication
+                if (@techCom >= 90) {
+                    $("#divTechCommNo").addClass("text-success");
+                    $("#divTechCommProg").addClass("bg-success");
+                }
+                else if (@techCom >= 70 && @techCom < 90) {
+                    $("#divTechCommNo").addClass("text-info");
+                    $("#divTechCommProg").addClass("bg-info");
+                }
+                else if (@techCom >= 50 && @techCom < 70) {
+                    $("#divTechCommNo").addClass("text-warning");
+                    $("#divTechCommProg").addClass("bg-warning");
+                }
+                else if (@techCom < 50) {
+                    $("#divTechCommNo").addClass("text-danger");
+                    $("#divTechCommProg").addClass("bg-danger");
+                }
+
+                //Verbal Communication
+                  if (@verCom >= 90) {
+                    $("#divVerCommNo").addClass("text-success");
+                    $("#divVerCommProg").addClass("bg-success");
+                }
+                else if (@verCom >= 70 && @verCom < 90) {
+                    $("#divVerCommNo").addClass("text-info");
+                    $("#divVerCommProg").addClass("bg-info");
+                }
+                else if (@verCom >= 50 && @verCom < 70) {
+                    $("#divVerCommNo").addClass("text-warning");
+                    $("#divVerCommProg").addClass("bg-warning");
+                }
+                else if (@verCom < 50) {
+                    $("#divVerCommNo").addClass("text-danger");
+                    $("#divVerCommProg").addClass("bg-danger");
+                }
+
+                 //Enthu
+                if (@enthu >= 90) {
+                    $("#divEnthuNo").addClass("text-success");
+                    $("#divEnthuProg").addClass("bg-success");
+                }
+                else if (@enthu >= 70 && @enthu < 90) {
+                    $("#divEnthuNo").addClass("text-info");
+                    $("#divEnthuProg").addClass("bg-info");
+                }
+                else if (@enthu >= 50 && @enthu < 70) {
+                    $("#divEnthuNo").addClass("text-warning");
+                    $("#divEnthuProg").addClass("bg-warning");
+                }
+                else if (@enthu < 50) {
+                    $("#divEnthuNo").addClass("text-danger");
+                    $("#divEnthuProg").addClass("bg-danger");
+                }
+
+                //Prof
+                if (@prof >= 90) {
+                    $("#divProfNo").addClass("text-success");
+                    $("#divProfProg").addClass("bg-success");
+                }
+                else if (@prof >= 70 && @prof < 90) {
+                    $("#divProfNo").addClass("text-info");
+                    $("#divProfProg").addClass("bg-info");
+                }
+                else if (@prof >= 50 && @prof < 70) {
+                    $("#divProfNo").addClass("text-warning");
+                    $("#divProfProg").addClass("bg-warning");
+                }
+                else if (@prof < 50) {
+                    $("#divProfNo").addClass("text-danger");
+                    $("#divProfProg").addClass("bg-danger");
+                }
+            }
+
+            SetChartColors();
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            //ctx.width = 500;
+            //ctx.height = 500;
+
+            var overallScore = @overallScoreServer;
+            var remaining = 100 - overallScore;
+
+            var donutColor = "rgb(255, 255, 255)";
+            if (overallScore >= 90) {
+                donutColor = "rgb(40,167,69)";
+            }
+            else if (overallScore >= 70 && overallScore < 90) {
+                donutColor = "rgb(23,162,184)";
+            }
+            else if (overallScore >= 50 && overallScore < 70) {
+                donutColor = "rgb(255,193,7)";
+            }
+            else if (overallScore < 50) {
+                donutColor = "rgb(255, 0, 0)";
+            }
+
+            var chartData = {
+                datasets: [{
+                    label: 'Overall Score',
+                    data: [overallScore, remaining],
+                    backgroundColor: [
+                        donutColor, 
+                        "rgb(255, 255, 255)",
+                    ],
+                    borderColor: 'rgb(255, 99, 132)',
+                }]
+            };
+
+            var myDoughnutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+
+            Chart.pluginService.register({
+                beforeDraw: function (chart) {
+                    var width = chart.chart.width,
+                        height = chart.chart.height,
+                        ctx = chart.chart.ctx;
+
+                    ctx.restore();
+                    var fontSize = (height / 114).toFixed(2);
+                    ctx.font = fontSize + "em sans-serif";
+                    ctx.textBaseline = "middle";
+                    //id="CandidateFirstName'+ cnt.toString() + '"' + '
+                    var text = overallScore.toString() +"%",
+                        textX = Math.round((width - ctx.measureText(text).width) / 2),
+                        textY = height / 2;
+
+                    ctx.fillText(text, textX, textY);
+                    ctx.save();
+                }
+            });
+
+        });
+    </script>
+
+}
+
+
+
+<div class="app-page-title">
+    <div class="page-title-wrapper">
+        <div class="page-title-heading">
+            <div class="page-title-icon">
+                <i class="pe-7s-wallet icon-gradient bg-plum-plate">
+                </i>
+            </div>
+            <div>
+                Score Card - Chris Gedge
+                <div class="page-title-subheading">
+                    chris.gedge@gmail.com | (602) 862-8396.
+                </div>
+            </div>
+        </div>
+        <div class="page-title-actions">
+            <button type="button" data-toggle="tooltip" title="Example Tooltip" data-placement="bottom" class="btn-shadow mr-3 btn btn-dark">
+                <i class="fa fa-star"></i>
+            </button>
+            <div class="d-inline-block dropdown">
+                <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="btn-shadow dropdown-toggle btn btn-info">
+                    <span class="btn-icon-wrapper pr-2 opacity-7">
+                        <i class="fa fa-business-time fa-w-20"></i>
+                    </span>
+                    Buttons
+                </button>
+                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="javascript:void(0);" class="nav-link">
+                                <i class="nav-link-icon lnr-inbox"></i>
+                                <span>
+                                    Inbox
+                                </span>
+                                <div class="ml-auto badge badge-pill badge-secondary">86</div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:void(0);" class="nav-link">
+                                <i class="nav-link-icon lnr-book"></i>
+                                <span>
+                                    Book
+                                </span>
+                                <div class="ml-auto badge badge-pill badge-danger">5</div>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="javascript:void(0);" class="nav-link">
+                                <i class="nav-link-icon lnr-picture"></i>
+                                <span>
+                                    Picture
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a disabled href="javascript:void(0);" class="nav-link disabled">
+                                <i class="nav-link-icon lnr-file-empty"></i>
+                                <span>
+                                    File Disabled
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="main-card mb-3 card">
+            <div class="card-header" style="background-color:lightgreen">
+                Score Card
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="col-md-6 mb-3 justify-content-center">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <div class="col-md-6 mb-3 justify-content-center">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in Model.lstDetailedCandidateScreening)
+                            {
+                                var ariaValueNow = item.SkillScore * 10;
+                                <li class="list-group-item">
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-outer">
+                                            <div class="widget-content-wrapper">
+                                                <div class="widget-content-left">
+                                                    <div class="widget-heading">@item.SkillName</div>
+                                                </div>
+                                                <div class="widget-content-right">
+                                                    @if (item.SkillScore >= 9)
+                                                    {
+                                                        <div class="widget-numbers text-success">@ariaValueNow%</div>
+                                                    }
+                                                    else if (item.SkillScore >= 7 && item.SkillScore < 9)
+                                                    {
+                                                        <div class="widget-numbers text-info">@ariaValueNow%</div>
+                                                    }
+                                                    else if (item.SkillScore >= 5 && item.SkillScore < 7)
+                                                    {
+                                                        <div class="widget-numbers text-warning">@ariaValueNow%</div>
+                                                    }
+                                                    else if (item.SkillScore < 5)
+                                                    {
+                                                        <div class="widget-numbers text-danger">@ariaValueNow%</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="widget-progress-wrapper">
+                                                <div class="progress-bar-xs progress">
+                                                    @if (item.SkillScore >= 9)
+                                                    {
+                                                    <div class="progress-bar bg-success" role="progressbar" aria-valuenow="@ariaValueNow.ToString()" aria-valuemin="0" aria-valuemax="100" style="width: @ariaValueNow%;"></div>
+                                                    }
+                                                    else if (item.SkillScore >= 7 && item.SkillScore < 9)
+                                                    {
+                                                <div class="progress-bar bg-info" role="progressbar" aria-valuenow="@ariaValueNow.ToString()" aria-valuemin="0" aria-valuemax="100" style="width: @ariaValueNow%;"></div>
+                                                    }
+                                                    else if (item.SkillScore >= 5 && item.SkillScore < 7)
+                                                    {
+                                                <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="@ariaValueNow.ToString()" aria-valuemin="0" aria-valuemax="100" style="width: @ariaValueNow%;"></div>
+                                                    }
+                                                    else if (item.SkillScore < 5)
+                                                    {
+                                                <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="@ariaValueNow.ToString()" aria-valuemin="0" aria-valuemax="100" style="width: @ariaValueNow%;"></div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="">
+    <div class="divider mt-0" style="margin-bottom: 30px;"></div>
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <div class="card-shadow-danger mb-3 widget-chart widget-chart2 text-left card">
+                <div class="widget-content">
+                    <div class="widget-content-outer">
+                        <div class="widget-content-wrapper">
+                            <div class="widget-content-left pr-2 fsize-1">
+                                <div class="widget-numbers mt-0 fsize-3" id="divTechCommNo">@techCom%</div>
+                            </div>
+                            <div class="widget-content-right w-100">
+                                <div class="progress-bar-xs progress">
+                                    <div class="progress-bar" id="divTechCommProg" role="progressbar" aria-valuenow="@techCom.ToString()" aria-valuemin="0" aria-valuemax="100" style="width: @techCom%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-content-left fsize-1">
+                            <div class="text-muted opacity-6">Technical Communication</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card-shadow-success mb-3 widget-chart widget-chart2 text-left card">
+                <div class="widget-content">
+                    <div class="widget-content-outer">
+                        <div class="widget-content-wrapper">
+                            <div class="widget-content-left pr-2 fsize-1">
+                                <div class="widget-numbers mt-0 fsize-3" id="divVerCommNo">@verCom%</div>
+                            </div>
+                            <div class="widget-content-right w-100">
+                                <div class="progress-bar-xs progress">
+                                    <div class="progress-bar" id="divVerCommProg" role="progressbar" aria-valuenow="@verCom.ToString()" aria-valuemin="0" aria-valuemax="100" style="width: @verCom%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-content-left fsize-1">
+                            <div class="text-muted opacity-6">Verbal Communication</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card-shadow-warning mb-3 widget-chart widget-chart2 text-left card">
+                <div class="widget-content">
+                    <div class="widget-content-outer">
+                        <div class="widget-content-wrapper">
+                            <div class="widget-content-left pr-2 fsize-1">
+                                <div class="widget-numbers mt-0 fsize-3" id="divEnthuNo">@enthu%</div>
+                            </div>
+                            <div class="widget-content-right w-100">
+                                <div class="progress-bar-xs progress">
+                                    <div class="progress-bar" id="divEnthuProg" role="progressbar" aria-valuenow="@enthu.ToString()" aria-valuemin="0" aria-valuemax="100" style="width: @enthu%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-content-left fsize-1">
+                            <div class="text-muted opacity-6">Candidate Enthusiasm</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card-shadow-info mb-3 widget-chart widget-chart2 text-left card">
+                <div class="widget-content">
+                    <div class="widget-content-outer">
+                        <div class="widget-content-wrapper">
+                            <div class="widget-content-left pr-2 fsize-1">
+                                <div class="widget-numbers mt-0 fsize-3" id="divProfNo">@prof%</div>
+                            </div>
+                            <div class="widget-content-right w-100">
+                                <div class="progress-bar-xs progress">
+                                    <div class="progress-bar" id="divProfProg" role="progressbar" aria-valuenow="@prof.ToString()" aria-valuemin="0" aria-valuemax="100" style="width: @prof%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-content-left fsize-1">
+                            <div class="text-muted opacity-6">Professional Appearance</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

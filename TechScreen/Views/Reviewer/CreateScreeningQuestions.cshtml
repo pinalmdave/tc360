@@ -75,7 +75,7 @@
                         processData: false,
                         success: function (data) {
                             var redirectUrl = "/Reviewer/Index";
-                            window.location.href = redirectUrl; 
+                            window.location.href = redirectUrl;
                         },
                         error: function (data) { alert(data); }
                     })
@@ -85,80 +85,92 @@
     </script>
 }
 
-<h2>CreateScreeningQuestions</h2>
-
+<div class="app-page-title">
+    <div class="page-title-wrapper">
+        <div class="page-title-heading">
+            <div class="page-title-icon">
+                <i class="pe-7s-home icon-gradient bg-mean-fruit">
+                </i>
+            </div>
+            <div>
+                Create Interview Questions
+            </div>
+        </div>
+    </div>
+</div>
 <form id="frmQuestions">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="col-12 well">
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <label>Job Title: </label>&nbsp;&nbsp;
-                            <span id="cJobTitle">@Model.Screening.JobTitle</span>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label>Area of Expertise: </label>&nbsp;&nbsp;
-                            <span id="cAreaOfExpertise">@Model.Screening.JobCat</span>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label>Required Skills: </label>&nbsp;&nbsp;
-                            <span id="cRequiredSkills">@Model.Screening.TechId</span>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <label>Optional Skills: </label>&nbsp;&nbsp;
-                            <span id="cOptionalSkills">@Model.Screening.TechId</span>
-                        </div>
-                    </div>
-                    <div class="row">&nbsp;</div>
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <label>Job Description: </label>&nbsp;&nbsp;
-                            <span id="cJobDescription">@Model.Screening.JobDesc</span>
-                        </div>
-                    </div>
-                    <div class="row">&nbsp;</div>
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <label>Screening Questions: </label>&nbsp;&nbsp;
-                            <span id="cJobQ">@Model.Screening.ScreeningQuestions</span>
-                        </div>
-                    </div>
-                    <div class="row">&nbsp;</div>
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <label>Special Request to the Interviewer: </label>&nbsp;&nbsp;
-                            <span id="cSpecialReq">@Model.Screening.SpecialRequest</span>
-                        </div>
-                    </div>
 
-                    <div class="row">&nbsp;</div>
-                    <div class="row">
-                        <div class="col-12 mb-3">
-                            <button class="btn btn-primary pull-right" id="btnAddQ">Add Screening Questions</button>
-                        </div>
-                    </div>
+
+    <div class="main-card mb-3 card">
+        <div class="card-body">
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <label>Job Title</label>
+                    <span>@Model.Screening.JobTitle</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label>Area of Expertise</label>
+                    <span>@Model.Screening.JobCat.JobCatDesc</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Required Skills</label>
+                    <span>@Model.Screening.RequiredSkills</span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Optional Skills</label>
+                    <span>@Model.Screening.OptionalSkills</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <label>Job Description</label>
+                    <span>@Model.Screening.JobDesc</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <label>Screening Questions Provided</label>
+                    <span>@Model.Screening.JobScreeningQuestions</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 mb-3">
+                    <label>Special Request to the Interviewer</label>
+                    <span>@Model.Screening.SpecialRequest</span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-12 mb-3">
+                    <button class="btn btn-primary pull-right" id="btnAddQ">Add Screening Questions</button>
+                    <a href="/reviewer/index">Go Back</a>
+
                 </div>
             </div>
         </div>
     </div>
-    <hr />
-    <div class="container">
-        <div id="divQ" name="divQ">
-            <table class="table table-striped" id="tblCandidate">
-                <thead>
-                    <tr>
-                        <th scope="col">Question #</th>
-                        <th scope="col">Question Text</th>
-                        <th scope="col" style="display:none"></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="row">&nbsp;&nbsp;</div>
-        <div class="row">
-            <button class="btn btn-primary btn-lg pull-right" id="btnSubmit" asp-action="CreateScreeningQuestions">Submit Questions</button>
+
+    <div class="main-card mb-3 card">
+        <div class="card-body">
+            <div class="card-header">
+                Questions
+            </div>
+            <div class="form-row" id="divQ" name="divQ">
+                <table class="table table-striped" id="tblCandidate">
+                    <thead>
+                        <tr>
+                            <th scope="col">Question #</th>
+                            <th scope="col">Question Text</th>
+                            <th scope="col" style="display:none"></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="form-row pull-right">
+                <button class="btn btn-primary btn-lg pull-right" id="btnSubmit" asp-action="CreateScreeningQuestions">Submit Questions</button>
+            </div>
         </div>
     </div>
 </form>

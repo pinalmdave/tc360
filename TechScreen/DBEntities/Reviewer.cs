@@ -7,6 +7,7 @@ namespace TechScreen.DBEntities
     {
         public Reviewer()
         {
+            DetailedCandidateScreening = new HashSet<DetailedCandidateScreening>();
             ReviewerTechnologies = new HashSet<ReviewerTechnologies>();
             Screening = new HashSet<Screening>();
             ScreeningCandidate = new HashSet<ScreeningCandidate>();
@@ -32,6 +33,7 @@ namespace TechScreen.DBEntities
         public DateTime? LastUpdated { get; set; }
         public string LastUpdatedBy { get; set; }
 
+        public virtual ICollection<DetailedCandidateScreening> DetailedCandidateScreening { get; set; }
         public virtual ICollection<ReviewerTechnologies> ReviewerTechnologies { get; set; }
         public virtual ICollection<Screening> Screening { get; set; }
         public virtual ICollection<ScreeningCandidate> ScreeningCandidate { get; set; }

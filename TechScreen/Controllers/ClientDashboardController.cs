@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using TechScreen.DBEntities;
 using TechScreen.Models;
 using TechScreen.Services;
+using TechScreen.Utilities;
+using TechScreen.ViewModels;
 
 namespace TechScreen.Controllers
 {
@@ -22,7 +24,7 @@ namespace TechScreen.Controllers
         }
 
         public IActionResult Index()
-        {
+        {  
             var email = User.Claims.Where(x => x.Type == "emails").FirstOrDefault().Value;
 
             var isNewClient = this.screeningRepository.IsNewClient(email);
@@ -35,11 +37,27 @@ namespace TechScreen.Controllers
             var screening = GetScreenings();
 
             return View(screening);
+            //return View("Dashboard");
         }
 
 
         private List<ScreeningModel> GetScreenings()
         {
+            //Email Example
+            //var emailViewModel = new EmailViewModel();
+            //emailViewModel.FromEmail = "admin@appinfinitytech.com";
+            //emailViewModel.Subject = "Test Email from TechScreen360";
+
+            //List<EmailRecipient> lstEmailRecipients = new List<EmailRecipient>();
+            //var recipient1 = new EmailRecipient();
+            //recipient1.RecipientName = "Pinal Dave";
+            //recipient1.RecipientEmail = "pinalmdave@gmail.com";
+            //lstEmailRecipients.Add(recipient1);
+            //emailViewModel.lstEmailRecipient = lstEmailRecipients;
+            //EmailUtility.SendGridMessage(emailViewModel).Wait();
+
+            //
+
             var email = User.Claims.Where(x => x.Type == "emails").FirstOrDefault().Value;
 
             var screenings = this.screeningRepository.GetUserScreening(email);
@@ -92,6 +110,13 @@ namespace TechScreen.Controllers
         public IActionResult NewScreening()
         {  
             return RedirectToAction("Create", "Screening");
+        }
+
+        public IActionResult OpenCandidateModal()
+        {
+            var screeningCandidateModel = new ScreeningCandidateModel();
+
+            return PartialView("_AddCandidate", screeningCandidateModel);
         }
     }
 }

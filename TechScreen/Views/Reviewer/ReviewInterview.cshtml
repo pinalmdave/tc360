@@ -1,0 +1,231 @@
+﻿@model TechScreen.ViewModels.CandidateScreeningInfoVM
+@using Newtonsoft.Json;
+
+@{
+    var jsonObject = JsonConvert.SerializeObject(Model.ScreeningQuestions, Formatting.None,
+        new JsonSerializerSettings()
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        });
+}
+
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+
+            var jsonString = '@jsonObject';
+            var questions = JSON.parse(jsonString.replace(/&quot;/g, '"'));
+            var totalQuestions = '@Model.ScreeningQuestions.Count';
+
+            var candidateId = '@Model.CandidateId';
+            var screeningId = '@Model.ScreeningId';
+            var video = document.querySelector('video');
+
+            $("#divResponse").hide();
+
+            $(".btnGetBlob").click(function (e) {
+
+                e.preventDefault();
+
+                $("#divResponse").show();
+
+                var questionNo = $(this).val();
+
+                 $("#showCurrentQuestion").text(questions[(questionNo-1)].QuestionText);
+
+                video.src = "https://techscreenstorageacct.blob.core.windows.net/screening-videos/" + screeningId + "/" + candidateId + "/" + questionNo;
+
+                return false;
+            });
+
+            var cnt = 0;
+            $("#btnAddSkill").click(function (e) {
+                e.preventDefault();
+                $('#tblSkill tr:last').after('\
+                                    <tr>\
+                                        <td>\
+                                            <input type="text" asp-for="LstDetailedCandidateScreeningModel.SkillName" class="form-control tblvalidate"  id="SkillName'+ cnt.toString() + '"' + '>\
+                                            <span asp-validation-for="LstDetailedCandidateScreeningModel.SkillName" class="text-danger"></span>\
+                                        </td>\
+                                        <td>\
+                                            <input type="text" asp-for="LstDetailedCandidateScreeningModel.SkillScore" class="form-control tblvalidate"  id="SkillScore'+ cnt.toString() + '"' + '>\
+                                            <span asp-validation-for="LstDetailedCandidateScreeningModel.SkillScore" class="text-danger"></span>\
+                                        </td>\
+                                        <td>\
+                                            <input type="text" asp-for="LstDetailedCandidateScreeningModel.ReviwerComments" class="form-control tblvalidate"  id="ReviwerComments'+ cnt.toString() + '"' + '>\
+                                        </td>\
+                                        <td>\
+                                          <Button class="btn btn-link del">Delete</Button>\
+                                        </td>\
+                                    </tr>\
+                                    ');
+            });
+
+            $("#btnSubmit").click(function (e) {
+                e.preventDefault();
+
+                var form = $("#frmFeedback");
+
+                var model = form.serialize();
+
+                var technicalSkills = new Array();
+
+                $("#tblSkill tr").each(function () {
+                    var row = $(this);
+                    var ts = {};
+                    ts.SkillName = row.find("TD").eq(0).find("input").val();
+                    ts.SkillScore = row.find("TD").eq(1).find("input").val();
+                    ts.ReviewerComments = row.find("TD").eq(2).find("input").val();
+
+                    if (jQuery.type(ts.SkillName) != "undefined") {
+                        technicalSkills.push(ts);
+                    }
+                });
+
+                var formData = new FormData();
+                formData.append('techSkillScore', JSON.stringify(technicalSkills));
+                formData.append('scoreSummary', model);
+
+                $.ajax(
+                    {
+                        type: "POST",
+                        url: "/Reviewer/SubmitScreeningFeedback",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            window.location.href = data;
+                        },
+                        error: function (data) { alert(data); }
+                    })
+
+            });
+        });
+    </script>
+}
+
+<div class="app-page-title">
+    <div class="page-title-wrapper">
+        <div class="page-title-heading">
+            <div class="page-title-icon">
+                <i class="pe-7s-home icon-gradient bg-mean-fruit">
+                </i>
+            </div>
+            <div>
+                Review Interview Response
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-row">
+    <div class="col-12">
+        <nav class="" aria-label="Page navigation example">
+            <ul class="pagination pagination-lg justify-content-center">
+
+                <li class="page-item"><a href="javascript:void(0);" class="page-link" aria-label="Previous"><span aria-hidden="true">«</span><span class="sr-only">Previous</span></a></li>
+
+                @foreach (var question in Model.ScreeningQuestions)
+                {
+                    <li class="page-item">
+                        <button class="page-link btnGetBlob" value="@question.QuestionId">@question.QuestionId</button>
+                    </li>
+                }
+                <li class="page-item"><a href="javascript:void(0);" class="page-link" aria-label="Next"><span aria-hidden="true">»</span><span class="sr-only">Next</span></a></li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<div class="card" id="divResponse">
+    <div class="card-body">
+        <div class="form-row">
+            <div class="col-6">
+                <div class="form-row">
+                    <div class="col-6">
+                        <h5 id="showCurrentQuestion"></h5>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-6">
+                        <video controls autoplay playsinline></video>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <form id="frmFeedback">
+                    @Html.HiddenFor(m => Model.ScreeningId)
+                    @Html.HiddenFor(m => Model.CandidateId)
+                    <div class="form-row">
+                        <div class="col-3">
+                            <div class="position-relative form-group">
+                                <label>Overall Score</label>
+                                <input type="text" asp-for="@Model.ScreeningCandidateModel.OverallScore" class="form-control">
+                                <span asp-validation-for="@Model.ScreeningCandidateModel.OverallScore" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="position-relative form-group">
+                                <label>Technical Communication</label>
+                                <input type="text" asp-for="@Model.ScreeningCandidateModel.TechnicalCommunication" class="form-control">
+                                <span asp-validation-for="@Model.ScreeningCandidateModel.TechnicalCommunication" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="position-relative form-group">
+                                <label>Verbal Communication</label>
+                                <input type="text" asp-for="@Model.ScreeningCandidateModel.VerbalCommunication" class="form-control">
+                                <span asp-validation-for="@Model.ScreeningCandidateModel.VerbalCommunication" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="position-relative form-group">
+                                <label>Candidate Enthusiasm</label>
+                                <input type="text" asp-for="@Model.ScreeningCandidateModel.CandidateEnthusiasm" class="form-control">
+                                <span asp-validation-for="@Model.ScreeningCandidateModel.CandidateEnthusiasm" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12">
+                            <div class="position-relative form-group">
+                                <label>Overall impression and Recommendation</label>
+                                <textarea class="form-control" style="white-space: pre-wrap;" asp-for="@Model.ScreeningCandidateModel.ReviewerComments" rows="3" placeholder="Please enter your overall impression and recommandation"></textarea>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12">
+                            <div class="position-relative form-group">
+                                <table class="table table-striped" id="tblSkill">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Skill Name</th>
+                                            <th scope="col">Score</th>
+                                            <th scope="col">Remarks(optional)</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12 text-right">
+                            <button class="btn btn-primary" id="btnAddSkill">Add Technical Skills</button>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-primary" id="btnSubmit">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+

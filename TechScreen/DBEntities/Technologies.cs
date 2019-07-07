@@ -8,7 +8,6 @@ namespace TechScreen.DBEntities
         public Technologies()
         {
             CustomScreeningQuestions = new HashSet<CustomScreeningQuestions>();
-            Screening = new HashSet<Screening>();
             TechnologyScreeningQuestions = new HashSet<TechnologyScreeningQuestions>();
         }
 
@@ -18,7 +17,6 @@ namespace TechScreen.DBEntities
 
         public virtual TechnologyStack TechStack { get; set; }
         public virtual ICollection<CustomScreeningQuestions> CustomScreeningQuestions { get; set; }
-        public virtual ICollection<Screening> Screening { get; set; }
         public virtual ICollection<TechnologyScreeningQuestions> TechnologyScreeningQuestions { get; set; }
     }
 }

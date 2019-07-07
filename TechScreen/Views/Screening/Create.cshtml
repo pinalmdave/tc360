@@ -6,18 +6,36 @@
 
 @section Inlinecss
     {
-    <style>
-        body {
-            margin-top: 20px;
-        }
-    </style>
+    <link href="~/css/amsify.suggestags.css" rel="stylesheet" />
+    @*<style>
+            body {
+                margin-top: 20px;
+            }
+        </style>*@
 }
 
 @section Scripts
     {
+    <script src="~/lib/jquery.amsify.suggestags.js"></script>
+
     <script>
 
         $(document).ready(function () {
+
+            var arrTechnologies = new Array();
+
+            var array = @Html.Raw(Json.Serialize(@ViewBag.Technologies));
+
+            for(var i = 0; i < array.length; i++) {
+                arrTechnologies[i] = array[i];
+            }
+
+            $("#Screening_RequiredSkills").amsifySuggestags({
+				suggestions: arrTechnologies
+            });
+            $("#Screening_OptionalSkills").amsifySuggestags({
+				suggestions: arrTechnologies
+            });
 
             var cnt = 0;
 
@@ -41,28 +59,28 @@
                     cnt = cnt + 1;
 
                     $('#tblCandidate tr:last').after('\
-                                <tr>\
-                                    <td>\
-                                        <input type="text" asp-for="ScreeningCandidateModel.CandidateFirstName" class="form-control tblvalidate"  id="CandidateFirstName'+ cnt.toString() + '"' + '>\
-                                        <span asp-validation-for="ScreeningCandidateModel.CandidateFirstName" class="text-danger"></span>\
-                                    </td>\
-                                    <td>\
-                                        <input type="text" asp-for="ScreeningCandidateModel.CandidateLastName" class="form-control tblvalidate"  id="CandidateLastName'+ cnt.toString() + '"' + '>\
-                                        <span asp-validation-for="ScreeningCandidateModel.CandidateLastName" class="text-danger"></span>\
-                                    </td>\
-                                    <td>\
-                                        <input type="text" asp-for="ScreeningCandidateModel.CandidateEmail" class="form-control tblvalidate"  id="CandidateEmail'+ cnt.toString() + '"' + '>\
-                                        <span asp-validation-for="ScreeningCandidateModel.CandidateEmail" class="text-danger"></span>\
-                                    </td>\
-                                    <td>\
-                                        <input type="text" asp-for="ScreeningCandidateModel.CandidatePhone tblvalidate" class="form-control tblvalidate"  id="CandidatePhone'+ cnt.toString() + '"' + '>\
-                                        <span asp-validation-for="ScreeningCandidateModel.CandidatePhone" class="text-danger"></span>\
-                                    </td>\
-                                    <td>\
-                                        Delete\
-                                    </td>\
-                                </tr>\
-                                ');
+                                    <tr>\
+                                        <td>\
+                                            <input type="text" asp-for="ScreeningCandidateModel.CandidateFirstName" class="form-control tblvalidate"  id="CandidateFirstName'+ cnt.toString() + '"' + '>\
+                                            <span asp-validation-for="ScreeningCandidateModel.CandidateFirstName" class="text-danger"></span>\
+                                        </td>\
+                                        <td>\
+                                            <input type="text" asp-for="ScreeningCandidateModel.CandidateLastName" class="form-control tblvalidate"  id="CandidateLastName'+ cnt.toString() + '"' + '>\
+                                            <span asp-validation-for="ScreeningCandidateModel.CandidateLastName" class="text-danger"></span>\
+                                        </td>\
+                                        <td>\
+                                            <input type="text" asp-for="ScreeningCandidateModel.CandidateEmail" class="form-control tblvalidate"  id="CandidateEmail'+ cnt.toString() + '"' + '>\
+                                            <span asp-validation-for="ScreeningCandidateModel.CandidateEmail" class="text-danger"></span>\
+                                        </td>\
+                                        <td>\
+                                            <input type="text" asp-for="ScreeningCandidateModel.CandidatePhone tblvalidate" class="form-control tblvalidate"  id="CandidatePhone'+ cnt.toString() + '"' + '>\
+                                            <span asp-validation-for="ScreeningCandidateModel.CandidatePhone" class="text-danger"></span>\
+                                        </td>\
+                                        <td>\
+                                          <Button class="btn btn-link del"><i class="fas fa-user-times" style="color:Red;   "></i></Button>\
+                                        </td>\
+                                    </tr>\
+                                    ');
                 }
             });
 
@@ -71,12 +89,16 @@
             $("#divInterviewQuestions").hide();
 
             $("input[type='radio']").click(function () {
-                if ($('input:radio[name=rdQ]:checked').val() == "Y") {
+                $("#spnIsClientScreeningQ").text("");
+                $("#spJobDesc").text("");
+                $("#spScrQ").text("");
+
+                if ($('input:radio[name=IsClientScreeningQ]:checked').val() == "Y") {
                     $("#divInterviewQuestions").show();
                     $("#divTechSkills").hide();
                     $("#divJobDesc").hide();
                 }
-                if ($('input:radio[name=rdQ]:checked').val() == "N") {
+                if ($('input:radio[name=IsClientScreeningQ]:checked').val() == "N") {
                     $("#divInterviewQuestions").hide();
                     $("#divTechSkills").show();
                     $("#divJobDesc").show();
@@ -116,6 +138,11 @@
                 PostData();
             });
 
+            $(document).on('click', '.del', function (e) {
+                e.preventDefault();
+                $(this).parent().parent().remove();
+            });
+
             $(document).on('blur', '.tblvalidate', function () {
                 //alert('blur');
 
@@ -138,7 +165,28 @@
                         $("#spanValidateCandidates").text('Please Enter Candidate Phone');
                     }
                 }
+                else {
+                    //Email Validation
+                    var fieldId = $(this).attr('id')
+                    if (fieldId.indexOf("Email") >= 0) {
+                        var isValidEmail = validateEmail($(this).val());
+
+                        if (!isValidEmail) {
+                            $("#spanValidateCandidates").text('Invalid Email Address');
+                        }
+                    }
+                }
             });
+
+            function validateEmail(sEmail) {
+                var filter = /^([\w-\.]+)@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+                if (filter.test(sEmail)) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            };
 
             function ValidateTblCandidate() {
                 var errorMsg = '';
@@ -152,7 +200,12 @@
                     if (jQuery.type(candidateFirstName) != "undefined") {
                         if (candidateFirstName == '' || candidateLastName == '' || candidateEmail == '') {
 
-                            errorMsg = "Please Enter Candidate(s) First Name, Last Name and Email to continue"
+                            errorMsg = "Please Enter Candidate(s) First Name, Last Name and Email to continue";
+                        }
+                        else {
+                            if (!validateEmail(candidateEmail)) {
+                                errorMsg = "Invalid Email Address";
+                            }
                         }
                     }
                 });
@@ -185,45 +238,59 @@
                 var totalCost = (costScreeningEachCandidates * totalCandidates) + newRequirementCost;
 
                 $('#tblPayment tbody').append('\
-                                <tr>\
-                                    <td>\
-                                        Candidates to be Screened\
-                                    </td>\
-                                    <td>'+ totalCandidates +' \
-                                        \
-                                    </td>\
-                                </tr>\
                                     <tr>\
-                                    <td>\
-                                        Screening cost per candidate\
-                                    </td>\
-                                    <td> $'+ costScreeningEachCandidates +' \
-                                        \
-                                    </td>\
-                                </tr>\
-                                <tr>\
-                                    <td>\
-                                        One time cost to review new requirement \
-                                    </td>\
-                                    <td> $'+ newRequirementCost +' \
-                                        \
-                                    </td>\
-                                </tr>\
-                                <tr>\
-                                    <td>\
-                                        Total Cost \
-                                    </td>\
-                                    <td> $'+ totalCost +' \
-                                        \
-                                    </td>\
-                                </tr>\
-                                ');
+                                        <td>\
+                                            Total Candidates\
+                                        </td>\
+                                        <td>'+ totalCandidates + ' \
+                                            \
+                                        </td>\
+                                    </tr>\
+                                        <tr>\
+                                        <td>\
+                                            Screening Price Per Candidate\
+                                        </td>\
+                                        <td> $ '+ costScreeningEachCandidates + ' \
+                                            \
+                                        </td>\
+                                    </tr>\
+                                    <tr>\
+                                        <td>\
+                                            One Time Review Cost\
+                                        </td>\
+                                        <td> $ '+ newRequirementCost + ' \
+                                            \
+                                        </td>\
+                                    </tr>\
+                                    <tr>\
+                                        <td class="table-success">\
+                                            <b>Total Cost</b> \
+                                        </td>\
+                                        <td class="table-success"> <b>$ '+ totalCost + '</b> \
+                                            \
+                                        </td>\
+                                    </tr>\
+                                    ');
             }
 
             $("#btnNext").click(function (e) {
                 e.preventDefault();
 
                 var form = $("#frmScreening");
+
+                 if (!$("input[name='IsClientScreeningQ']:checked").val()) {
+                    $("#spnIsClientScreeningQ").text("Please select Yes or No");
+                    return;
+                }
+
+                if ($('input:radio[name=IsClientScreeningQ]:checked').val() == "Y" && $("#Screening_JobScreeningQuestions").val().trim() == "") {
+                    $("#spScrQ").text("The Screening Questions field is required");
+                    return;
+                }
+                if ($('input:radio[name=IsClientScreeningQ]:checked').val() == "N" && $("#Screening_JobDesc").val().trim() == "") {
+                    $("#spJobDesc").text("The Job Description field is required");
+                    return;
+                }
 
                 if (!form.valid()) {
                     return;
@@ -232,20 +299,31 @@
                 var currentStepIndex = $('ul').find('li.active').index();
 
                 if (currentStepIndex == 0) {
-                    $('ul.setup-panel li:eq(1)').removeClass('disabled');
+
+                    $('ul.setup-panel li:eq(0)').removeClass('active').addClass('disabled');
+                    $('ul.setup-panel li:eq(0)').find('a:first').removeClass('active').addClass('disabled');
+
+                    $('ul.setup-panel li:eq(1)').removeClass('disabled').addClass('active');
+                    $('ul.setup-panel li:eq(1)').find('a:first').removeClass('disabled').addClass('active');
+
                     $('ul.setup-panel li a[href="#step-2"]').trigger('click');
                 }
                 else if (currentStepIndex == 1) {
 
                     if (validateCandidateStep() == true) {
-                        $('ul.setup-panel li:eq(2)').removeClass('disabled');
+                        $('ul.setup-panel li:eq(1)').removeClass('active').addClass('disabled');
+                        $('ul.setup-panel li:eq(1)').find('a:first').removeClass('active').addClass('disabled');
+
+                        $('ul.setup-panel li:eq(2)').removeClass('disabled').addClass('active');
+                        $('ul.setup-panel li:eq(2)').find('a:first').removeClass('disabled').addClass('active');
+
                         $('ul.setup-panel li a[href="#step-3"]').trigger('click');
                     }
                 }
-                else if (currentStepIndex == 2) {
-                    $('ul.setup-panel li:eq(3)').removeClass('disabled');
-                    $('ul.setup-panel li a[href="#step-4"]').trigger('click');
-                }
+                //else if (currentStepIndex == 2) {
+                //    $('ul.setup-panel li:eq(3)').removeClass('disabled');
+                //    $('ul.setup-panel li a[href="#step-4"]').trigger('click');
+                //}
 
                 e.preventDefault();
             });
@@ -291,25 +369,6 @@
                     })
             }
 
-            //$("#btnPrevious").click(function (e) {
-            //    $("#btnNext").show();
-            //    debugger;
-            //    var currentStepIndex = $('ul').find('li.active').index();
-
-            //    PopulateSummary(currentStepIndex);
-
-            //    if (currentStepIndex == 1) {
-            //        $('ul.setup-panel li a[href="#step-1"]').trigger('click');
-            //    }
-            //    else if (currentStepIndex == 2) {
-            //        $('ul.setup-panel li a[href="#step-2"]').trigger('click');
-            //    }
-            //    else if (currentStepIndex == 3) {
-            //        $('ul.setup-panel li a[href="#step-3"]').trigger('click');
-            //    }
-            //    e.preventDefault();
-            //});
-
             function PopulateSummary() {
 
                 $("#cHiringCompanyName").text($("#Screening_HiringCompanyName").val());
@@ -318,9 +377,9 @@
                 $("#cJobQ").text($("#Screening_JobScreeningQuestions").val());
                 $("#cJobDescription").text($("#Screening_JobDesc").val());
                 $("#cSpecialReq").text($("#Screening_SpecialRequest").val());
-                $("#cAreaOfExpertise").text($('#JobCategories').find(":selected").text());
-                $("#cRequiredSkills").text($('#Technologies').find(":selected").text());
-                $("#cOptionalSkills").text($('#Technologies').find(":selected").text());
+                $("#cAreaOfExpertise").text($('#Screening_JobCatId').find(":selected").text());
+                $("#cRequiredSkills").text($('#Screening_RequiredSkills').val());
+                $("#cOptionalSkills").text($('#Screening_OptionalSkills').val());
 
                 //Candidates
                 $("#tblClone tr").remove();
@@ -330,9 +389,6 @@
                 $("#tblPayment tr").remove();
 
                 calculatePayment();
-
-                $('ul.setup-panel li:eq(0)').addClass('disabled');
-                $('ul.setup-panel li:eq(1)').addClass('disabled');
             }
 
             $("#btnEdit").click(function (e) {
@@ -341,15 +397,21 @@
                 $("#btnNext").show();
                 e.preventDefault();
 
-                $('ul.setup-panel li:eq(0)').removeClass('disabled');
-                $('ul.setup-panel li:eq(1)').removeClass('disabled');
-                $('ul.setup-panel li:eq(2)').addClass('disabled');
+
+                $('ul.setup-panel li:eq(0)').removeClass('disabled').addClass('active');
+                $('ul.setup-panel li:eq(0)').find('a:first').removeClass('disabled').addClass('active');
+
+                //$('ul.setup-panel li:eq(1)').removeClass('disabled').addClass('active');
+                //$('ul.setup-panel li:eq(1)').find('a:first').removeClass('disabled');
+
+                $('ul.setup-panel li:eq(2)').removeClass('active').addClass('disabled');
+                $('ul.setup-panel li:eq(2)').find('a:first').removeClass('active').addClass('disabled');
+
                 $('ul.setup-panel li a[href="#step-1"]').trigger('click');
             });
 
             $('ul').find('li').on('click', function (e) {
 
-                // $("#btnPrevious").show();
                 $("#btnNext").show();
 
                 var currentStepIndex = $('ul').find('li.active').index();
@@ -378,256 +440,321 @@
     </script>
 }
 
-<form id="frmScreening" asp-action="PostJobRequirement" asp-controller="Screening" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="container">
-            <div class="row form-group">
-                <div class="col-xs-12">
-                    <ul class="nav nav-pills nav-justified thumbnail setup-panel">
-                        <li class="active">
-                            <a href="#step-1">
-                                <h4 class="list-group-item-heading">Step 1</h4>
-                                <p class="list-group-item-text">Add New Job Requirement</p>
-                            </a>
-                        </li>
-                        <li class="disabled">
-                            <a href="#step-2">
-                                <h4 class="list-group-item-heading">Step 2</h4>
-                                <p class="list-group-item-text">Add Candidate(s)</p>
-                            </a>
-                        </li>
-                        <li class="disabled">
-                            <a href="#step-3">
-                                <h4 class="list-group-item-heading">Step 3</h4>
-                                <p class="list-group-item-text">Review Details</p>
-                            </a>
-                        </li>
-                        <li class="disabled">
-                            <a href="#step-4">
-                                <h4 class="list-group-item-heading">Step 4</h4>
-                                <p class="list-group-item-text">Make Payment</p>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+<form id="frmScreening" asp-action="PostJobRequirement" asp-controller="Screening" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <ul class="nav nav-pills justify-content-center setup-panel">
+        <li class="nav-item active">
+            <a class="nav-link active" href="#step-1">
+                Step 1 - Add New Job Requirement
+            </a>
+        </li>
+        <li class="nav-item disabled">
+            <a class="nav-link disabled" href="#step-2">
+                Step 2 - Add Candidate(s)
+            </a>
+        </li>
+        <li class="nav-item disabled">
+            <a class="nav-link disabled" href="#step-3">
+                Step 3 - Review and Submit
+            </a>
+        </li>
+    </ul>
 
-            <div class="row setup-content" id="step-1">
-                <div class="col-xs-12">
-                    <div class="col-md-12 well">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="lblHiringCompanyName">Hiring Company Name</label>
-                                <input type="text" asp-for="Screening.HiringCompanyName" class="form-control">
-                                <span asp-validation-for="Screening.HiringCompanyName" class="text-danger"></span>
-
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lblJobRequisitionNumber">Job Requisition #</label>
-                                <input type="text" asp-for="Screening.JobRequisitionNumber" class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="lblJobTitle">Job Title</label>
-                                <input type="text" asp-for="Screening.JobTitle" class="form-control">
-                                <span asp-validation-for="Screening.JobTitle" class="text-danger"></span>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName">Area of Expertise</label>
-                                <select class="form-control" asp-for="JobCategories" asp-items="@(new SelectList(Model.lstJobCategories, "JobCatId", "JobCatDesc"))">
-                                    <option value="">--Select--</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName">Do you have screening questions?&nbsp;&nbsp;</label>
-                                <input type="radio" value="Y" name="rdQ" /><label for="lastName">Yes&nbsp;&nbsp;</label>
-                                <input type="radio" value="N" name="rdQ" /><label for="lastName">No</label>
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row" id="divTechSkills">
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName">Required Skills</label>
-                                <select class="form-control" multiple asp-for="Technologies" asp-items="@(new SelectList(Model.lstTechnologies, "TechId", "TechName"))">
-                                    <option value="">--Select--</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="lastName">Optional Skills</label>
-                                <select class="form-control" multiple asp-for="Technologies" asp-items="@(new SelectList(Model.lstTechnologies, "TechId", "TechName"))">
-                                    <option value="">--Select--</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row" id="divJobDesc">
-                            <div class="col-md-12 mb-3">
-                                <label for="firstName">Job Description</label>
-                                <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.JobDesc" rows="9" placeholder="Enter detailed job description here"></textarea>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName">(OR) Upload Job Description</label>
-                                <input type="file" value="Upload Job Description" />
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row" id="divInterviewQuestions">
-                            <div class="col-md-12 mb-3">
-                                <label for="firstName">Enter Screening Questions</label>
-                                <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.JobScreeningQuestions" rows="9" placeholder="Enter or copy paste screening questions here"></textarea>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="firstName">(OR) Upload File for screening questions</label>
-                                <input type="file" value="Upload Screening Questions" />
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label for="firstName">Special Request to the Interviewer</label>
-                                <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.SpecialRequest" rows="3" placeholder="Enter detailed job description here"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row setup-content" id="step-2">
-                <div class="col-xs-12">
-                    <div class="col-md-12 well">
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button class="btn btn-primary" id="btnAddCandidate">Add New Candidate</button>
-                            </div>
-                        </div>
-
-                        <table class="table table-striped" id="tblCandidate">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Candidate First Name</th>
-                                    <th scope="col">Candidate Last Name</th>
-                                    <th scope="col">Candidate Email</th>
-                                    <th scope="col">Candidate Contact No</th>
-                                    <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <div class="row">
-                            <span id="spanValidateCandidates" name="spanValidateCandidates" class="text-danger"></span>
-                        </div>
-                        <div class="row">
-                            <span id="spanValidateCandidatesFields" name="spanValidateCandidatesFields" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row setup-content" id="step-3">
-                <div class="col-xs-12">
-                    <div class="col-md-12 well">
-                        <div class="row"><h2>Job Requirement</h2></div>
-
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label>Hiring Company Name: </label>&nbsp;&nbsp;
-                                <span id="cHiringCompanyName"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label>Job Requisition #: </label>&nbsp;&nbsp;
-                                <span id="cJobRequisition">REQ45887</span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label>Job Title: </label>&nbsp;&nbsp;
-                                <span id="cJobTitle"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label>Area of Expertise: </label>&nbsp;&nbsp;
-                                <span id="cAreaOfExpertise"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label>Required Skills: </label>&nbsp;&nbsp;
-                                <span id="cRequiredSkills"></span>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label>Optional Skills: </label>&nbsp;&nbsp;
-                                <span id="cOptionalSkills"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label>Job Description: </label>&nbsp;&nbsp;
-                                <span id="cJobDescription"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label>Screening Questions: </label>&nbsp;&nbsp;
-                                <span id="cJobQ"></span>
-                            </div>
-                        </div>
-
-                        <div class="row">&nbsp;</div>
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label>Special Request to the Interviewer: </label>&nbsp;&nbsp;
-                                <span id="cSpecialReq"></span>
-                            </div>
-                        </div>
-                        <div class="row"><hr /></div>
-                        <div class="row"><h2>Candidates</h2></div>
-                        <table id="tblClone"></table>
-
-                        <div class="row">&nbsp;&nbsp;</div>
-                        <div class="row"><h2>Payment Detail</h2></div>
-                        <table id="tblPayment" name="tblPayment" class="table table-striped">
-                            <thead>
-                                <tr><td></td><td></td></tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-
-                    </div>
-                </div>
-            </div>
-            <div class="row setup-content" id="step-4">
-                <div class="row">
-                    <div id="divPayment" name="divPayment"></div>
-                </div>
-            </div>
-
+    <div class="main-card mb-3 card setup-content" id="step-1">
+        <div class="card-header" style="background-color:lightgray">
+            Add New Job Requirement
         </div>
-        <div class="container">
-            <div class="row">
-                @*<div class="col-md-6 mb-3 text-left">
-                    <button id="btnPrevious" class="btn btn-primary btn-lg">Previous</button>
-                </div>*@
-                <div class="col-md-6 mb-3 text-right">
-                    <button id="btnEdit" class="btn btn-primary btn-lg">Edit</button>&nbsp;&nbsp;
-                    <button id="btnNext" class="btn btn-primary btn-lg">Next</button>
-                    <button id="btnConfirm" class="btn btn-primary btn-lg">Confirm Details and Make Payment</button>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label for="lblHiringCompanyName">Hiring Company / Client Name</label><label style="color:red">*</label>
+                        <input type="text" asp-for="Screening.HiringCompanyName" class="form-control">
+                        <span asp-validation-for="Screening.HiringCompanyName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label for="lblJobTitle">Job Title</label><label style="color:red">*</label>
+                        <input type="text" asp-for="Screening.JobTitle" class="form-control">
+                        <span asp-validation-for="Screening.JobTitle" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label for="lblJobRequisitionNumber">Job Location</label><label style="color:red">*</label>
+                        <input type="text" asp-for="Screening.JobLocation" class="form-control">
+                        <span asp-validation-for="Screening.JobLocation" class="text-danger"></span>
+                    </div>
+                </div>
 
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label for="lblJobRequisitionNumber">Job Requisition #(optional)</label>
+                        <input type="text" asp-for="Screening.JobRequisitionNumber" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label for="lblJobRequisitionNumber">Experience Level</label><label style="color:red">*</label>
+                        <select class="form-control" asp-for="Screening.ExperienceLevel">
+                            <option value="">--Select--</option>
+                            <option value="J">Junior Developer (0-2 years experience)</option>
+                            <option value="I">Intermediate Developer (2-5 years experience)</option>
+                            <option value="S">Senior Developer (5+ years of experience)</option>
+                            <option value="TLA">Tech Lead / Architect</option>
+                            <option value="PM">Project Manager / BA / Scrum Master</option>
+                            <option value="SR">Senior Management (Director, Program Manager, VP)</option>
+                            <option value="O">Other</option>
+                        </select>
+                        <span asp-validation-for="Screening.ExperienceLevel" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="position-relative form-group">
+                        <label for="lastName">Job Category</label><label style="color:red">*</label>
+                        <select class="form-control" asp-for="Screening.JobCatId" asp-items="@(new SelectList(Model.lstJobCategories, "JobCatId", "JobCatDesc"))">
+                            <option value="">--Select--</option>
+                        </select>
+                        <span asp-validation-for="Screening.JobCatId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <div class="position-relative form-group">
+                        <label for="firstName">Do you have screening questions?&nbsp;&nbsp;</label>
+                        <input type="radio" value="Y" asp-for="Screening.IsClientScreeningQ" name="IsClientScreeningQ" /><label for="chkyes">Yes&nbsp;&nbsp;</label>
+                        <input type="radio" value="N" asp-for="Screening.IsClientScreeningQ" name="IsClientScreeningQ" /><label for="chkno">No</label>
+                        <span asp-validation-for="Screening.IsClientScreeningQ" id="spnIsClientScreeningQ" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="divTechSkills">
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="position-relative form-group">
+                            <label for="firstName">Required Skills</label><label style="color:red">*</label>
+                            <input type="text" asp-for="Screening.RequiredSkills" class="form-control">
+                            <span asp-validation-for="Screening.RequiredSkills" id="spReqsk" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="position-relative form-group">
+                            <label for="lastName">Optional Skills</label>
+                            <input type="text" asp-for="Screening.OptionalSkills" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row" id="divJobDesc">
+                <div class="col-md-12">
+                    <div class="position-relative form-group">
+                        <label for="firstName">Job Description</label><label style="color:red">*</label>
+                        <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.JobDesc" rows="9" placeholder="Enter detailed job description here"></textarea>
+                        <span id="spJobDesc" class="text-danger"></span>
+                    </div>
+                </div>
+                @*<div class="col-md-6 mb-3">
+                        <label for="firstName">(OR) Upload Job Description</label>
+                        <input type="file" name="UploadJobDesc" id="UploadJobDesc" value="Upload Job Description" />
+                    </div>*@
+            </div>
+            <div id="divInterviewQuestions">
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="position-relative form-group">
+                            <label for="firstName">Enter Screening Questions</label><label style="color:red">*</label>
+                            <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.JobScreeningQuestions" rows="9" placeholder="Enter or copy paste screening questions here"></textarea>
+                            <span id="spScrQ" class="text-danger"></span>
+                        </div>
+                    </div>
+                    @*<div class="col-md-6 mb-3">
+                            <label for="firstName">(OR) Upload File for screening questions</label>
+                            <input type="file" name="UploadQuestions" id="UploadQuestions" value="Upload Screening Questions" />
+                        </div>*@
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="col-md-12">
+                    <label for="firstName">Special Request to the Interviewer</label>
+                    <textarea class="form-control" style="white-space: pre-wrap;" asp-for="Screening.SpecialRequest" rows="3" placeholder="Enter detailed job description here"></textarea>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+
+    <div class="main-card mb-3 card setup-content" id="step-2">
+        <div class="card-header" style="background-color:lightgray">
+            Add Candidates
+        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="col-md-12">
+                    <table class="table table-striped" id="tblCandidate">
+                        <thead>
+                            <tr>
+                                <th scope="col">Candidate First Name</th>
+                                <th scope="col">Candidate Last Name</th>
+                                <th scope="col">Candidate Email</th>
+                                <th scope="col">Candidate Contact No</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="text" asp-for="ScreeningCandidateModel.CandidateFirstName" class="form-control tblvalidate" id="CandidateFirstName" />
+                                    <span asp-validation-for="ScreeningCandidateModel.CandidateFirstName" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <input type="text" asp-for="ScreeningCandidateModel.CandidateLastName" class="form-control tblvalidate" id="CandidateLastName" />
+                                    <span asp-validation-for="ScreeningCandidateModel.CandidateLastName" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <input type="text" asp-for="ScreeningCandidateModel.CandidateEmail" class="form-control tblvalidate" id="CandidateEmail" />
+                                    <span asp-validation-for="ScreeningCandidateModel.CandidateEmail" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <input type="text" asp-for="ScreeningCandidateModel.CandidatePhone" class="form-control tblvalidate" id="CandidatePhone" />
+                                    <span asp-validation-for="ScreeningCandidateModel.CandidatePhone" class="text-danger"></span>
+                                </td>
+                                <td>
+                                    <Button class="btn btn-link del"><i class="fas fa-user-times" style="color:Red;"></i></Button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12">
+                    <button class="btn btn-primary pull-right" id="btnAddCandidate">Add New Candidate</button>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <span id="spanValidateCandidates" name="spanValidateCandidates" class="text-danger"></span>
+            </div>
+            <div class="form-row">
+                <span id="spanValidateCandidatesFields" name="spanValidateCandidatesFields" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-card mb-3 card setup-content" id="step-3">
+        <div class="card-header" style="background-color:lightgray">
+            Review and Submit
+        </div>
+        <div class="card-body">
+
+            <div class="form-row">
+                <div class="col-md-3">
+                    <label><b>Hiring Company / Client Name</b></label>
+                    <p id="cHiringCompanyName"></p>
+                </div>
+                <div class="col-md-3">
+                    <label><b>Job Title</b></label>
+                    <p id="cJobTitle"></p>
+                </div>
+                <div class="col-md-3">
+                    <label><b>Job Location</b></label>
+                    <p id="cJobLocation"></p>
+                </div>
+                <div class="col-md-3">
+                    <label><b>Job Requisition #</b></label>
+                    <p id="cJobRequisition">REQ45887</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-3 mb-3">
+                    <label><b>Experience Level</b></label>
+                    <p id="cExperienceLevel"></p>
+                </div>
+                <div class="col-md-3">
+                    <label><b>Area of Expertise</b></label>
+                    <p id="cAreaOfExpertise"></p>
+                </div>
+                <div class="col-md-3">
+                    <label><b>Required Skills</b></label>
+                    <p id="cRequiredSkills"></p>
+                </div>
+                <div class="col-md-3">
+                    <label><b>Optional Skills</b></label>
+                    <p id="cOptionalSkills"></p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12">
+                    <label><b>Job Description</b></label>
+                    <p id="cJobDescription"></p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12">
+                    <label><b>Screening Questions</b></label>
+                    <p id="cJobQ"></p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12">
+                    <label><b>Special Request to the Interviewer</b></label>
+                    <p id="cSpecialReq"></p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12">
+                    <div class="main-card mb-3 card">
+                        <div class="card-header" style="background-color:lavender">
+                            Candidates
+                        </div>
+                        <div class="table-responsive">
+                            <table class="align-middle mb-0 table table-borderless table-striped table-hover" id="tblClone"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row align-items-end">
+                <div class="col-md-4 offset-8">
+                    <div class="main-card mb-3 card">
+                        <div class="card-header" style="background-color:lavender">
+                            Payment Detail
+                        </div>
+                        <div class="table-responsive">
+                            <table id="tblPayment" name="tblPayment" class="table table-striped">
+                                <thead>
+                                    <tr><td></td><td></td></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="col-md-12">
+            <button id="btnNext" class="btn btn-primary btn-lg pull-right">Next</button>
+        </div>
+    </div>
+
+    <div class="form-row ">
+        <div class="col-md-12 text-right">
+            <button id="btnEdit" class="btn btn-primary btn-lg">Edit</button>&nbsp;&nbsp;
+            <button id="btnConfirm" class="btn btn-primary btn-lg">Confirm Details and Make Payment</button>&nbsp;&nbsp;
+        </div>
+    </div>
+
+</form>

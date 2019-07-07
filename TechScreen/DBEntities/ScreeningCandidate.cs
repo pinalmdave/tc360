@@ -19,11 +19,10 @@ namespace TechScreen.DBEntities
         public string CandidatePhone { get; set; }
         public string ScreeningStatus { get; set; }
         public string CandidateSignInCode { get; set; }
-        public int? OverAllScore { get; set; }
-        public int? CommunicationSkills { get; set; }
-        public int? Attitude { get; set; }
-        public int? FacialGesture { get; set; }
-        public string VideoUrl { get; set; }
+        public int? OverallScore { get; set; }
+        public int? TechnicalCommunication { get; set; }
+        public int? VerbalCommunication { get; set; }
+        public int? CandidateEnthusiasm { get; set; }
         public string ReviewerComments { get; set; }
         public DateTime? CreatedOn { get; set; }
         public string CreatedBy { get; set; }

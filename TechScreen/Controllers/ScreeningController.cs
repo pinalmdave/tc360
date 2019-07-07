@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -61,27 +63,60 @@ namespace TechScreen.Controllers
 
 
         [HttpPost]
-        public IActionResult PostCandidates(ScreeningCandidateModel screeningCandidateModel)
-        {  
-            if (ModelState.IsValid)
+        public IActionResult PostCandidates()
+        {
+            int transactionId = 0;
+
+            try
             {
-                var userEmail = User.Claims.First(x => x.Type == "emails").Value;
+                var candidateData = Request.Form["candidates"];
+                var lstScreeningCandidateModel = JsonConvert.DeserializeObject<List<ScreeningCandidateModel>>(candidateData);
+                
+                if (ModelState.IsValid)
+                {
+                    var userEmail = User.Claims.First(x => x.Type == "emails").Value;
 
-                var screeningCandidate = _mapper.Map(screeningCandidateModel, new ScreeningCandidate());
+                    var lstScreeningCandidates = _mapper.Map(lstScreeningCandidateModel, new List<ScreeningCandidate>());
 
-                screeningCandidate.CreatedBy = userEmail;
-                screeningCandidate.CreatedOn = DateTime.Now;
-                _context.Add(screeningCandidate);
-                _context.SaveChangesAsync();
+                    foreach (var item in lstScreeningCandidates)
+                    {
+                        item.CreatedBy = userEmail;
+                        item.CreatedOn = DateTime.Now;
+                    }
 
+                    _context.AddRangeAsync(lstScreeningCandidates);
+                    _context.SaveChanges();
+
+                    //Transaction
+                    var transactionModel = new TransactionModel();
+
+                    transactionModel.ScreeningId = lstScreeningCandidates[0].ScreeningId;
+                    transactionModel.AmountBilled = lstScreeningCandidates.Count() * 49 * 100; //stripe amount is in sents;
+                    transactionModel.PaymentStatus = "Processing";
+                    transactionModel.LastUpdated = DateTime.Now;
+                    transactionModel.LastUpdatedBy = userEmail;
+
+                    var transaction = _mapper.Map(transactionModel, new Transaction());
+
+                    _context.Add(transaction);
+
+                    _context.SaveChanges();
+
+                    transactionId = transaction.TransactionId;
+                }
             }
-
-            return RedirectToAction("Index", "ClientDashboard");
+            catch(Exception ex)
+            {
+                throw;
+            }
+            return Json(Url.Action("MakePayment", "Payment", new { @id = transactionId }));
         }
 
+
+
         [HttpPost]
-        public async Task<IActionResult> PostJobRequirement(ScreeningViewModel screeningViewModel)
-        {  
+        public async Task<IActionResult> PostJobRequirement()
+        {
             int transactionId = 0;
             int screeningId = 0;
 
@@ -93,7 +128,7 @@ namespace TechScreen.Controllers
             var screeningCandidateModel = JsonConvert.DeserializeObject<List<ScreeningCandidateModel>>(candidateData);
             foreach(var item in screeningCandidateModel)
             {
-                item.ScreeningStatus = EnumScreeningStatus.AwaitingScreeningInvitation.ToString();
+                item.ScreeningStatus = EnumScreeningStatus.New.ToString();
                 item.CreatedBy = userEmail;
                 item.CreatedOn = DateTime.Now;
             }
@@ -114,7 +149,8 @@ namespace TechScreen.Controllers
                     screening.CreatedBy = userEmail;
                     screening.UserId = this._context.User.First(x => x.UserEmail == userEmail).UserId;
                     screening.CreatedOn = DateTime.Now;
-                    screening.Status = EnumScreeningStatus.SubmitQuestions.ToString();
+                    screening.Status = EnumScreeningStatus.New.ToString();
+                    screening.AdminStatus = EnumScreeningStatus.New.ToString();
 
                     _context.Add(screening);
                     await _context.SaveChangesAsync();
@@ -125,7 +161,7 @@ namespace TechScreen.Controllers
                     var transactionModel = new TransactionModel();
 
                     transactionModel.ScreeningId = screeningId;
-                    transactionModel.AmountBilled = screeningCandidateModel.Count() * 49 + 49;
+                    transactionModel.AmountBilled = (screeningCandidateModel.Count() * 49 + 49) * 100; // Stripe payments is in cents
                     transactionModel.PaymentStatus = "Processing";
                     transactionModel.LastUpdated = DateTime.Now;
                     transactionModel.LastUpdatedBy = userEmail;
@@ -168,7 +204,6 @@ namespace TechScreen.Controllers
             screeningViewModel.lstScreeningQuestions = _mapper.Map<List<ScreeningQuestionsModel>>(this._context.ScreeningQuestions.ToList());
             screeningViewModel.lstTechnologyStack = _mapper.Map<List<TechnologyStackModel>> (this._context.TechnologyStack.ToList());
             screeningViewModel.lstTechnologies = _mapper.Map<List<TechnologiesModel>>(this._context.Technologies.ToList());
-
             return View(screeningViewModel);
         }
 
@@ -200,6 +235,8 @@ namespace TechScreen.Controllers
             screeningViewModel.lstScreeningQuestions = _mapper.Map<List<ScreeningQuestionsModel>>(this._context.ScreeningQuestions.ToList());
             screeningViewModel.lstTechnologyStack = _mapper.Map<List<TechnologyStackModel>>(this._context.TechnologyStack.ToList());
             screeningViewModel.lstTechnologies = _mapper.Map<List<TechnologiesModel>>(this._context.Technologies.ToList());
+
+            ViewBag.Technologies = screeningViewModel.lstTechnologies.Select(x => x.TechName).ToArray();
 
             return View(screeningViewModel);
         }
