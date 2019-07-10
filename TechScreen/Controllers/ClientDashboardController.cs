@@ -82,7 +82,6 @@ namespace TechScreen.Controllers
             user.UserLastName = lastName;
             user.UserPhone = contactNo;
             screeningRepository.AddNewUser(user);
-
         }
 
         [HttpPost]
