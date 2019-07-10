@@ -2,373 +2,425 @@
 @{
     Layout = null;
 }
-@section Inlinecss
-{
-    <!-- Begin shared CSS values -->
-    <style class="shared-css" type="text/css">
-
-        .t {
-            -webkit-transform-origin: bottom left;
-            -ms-transform-origin: bottom left;
-            transform-origin: bottom left;
-            -webkit-transform: scale(0.25);
-            -ms-transform: scale(0.25);
-            transform: scale(0.25);
-            z-index: 2;
-            position: absolute;
-            white-space: pre;
-            overflow: visible;
-        }
-
-            .t::-moz-selection {
-                color: transparent;
-                background: rgba(0, 106, 173, 0.4);
-            }
-
-            .t::selection {
-                color: transparent;
-                background: rgba(0, 106, 173, 0.4);
-            }
-    </style>
-    <!-- End shared CSS values -->
-    <!-- Begin inline CSS -->
-    <style type="text/css">
 
 
-        #t1_1 {
-            left: 35px;
-            bottom: 1043px;
-            letter-spacing: -0.1px;
-            word-spacing: 0.3px;
-        }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="irstheme">
+    <link rel="icon" href="~/assets/images/favicon.ico">
+    <title>TechScreen 360</title>
+    <link href="~/assets/css/themify-icons.css" rel="stylesheet">
+    <link href="~/assets/css/flaticon.css" rel="stylesheet">
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/css/animate.css" rel="stylesheet">
+    <link href="~/assets/css/owl.carousel.css" rel="stylesheet">
+    <link href="~/assets/css/owl.theme.css" rel="stylesheet">
+    <link href="~/assets/css/slick.css" rel="stylesheet">
+    <link href="~/assets/css/slick-theme.css" rel="stylesheet">
+    <link href="~/assets/css/swiper.min.css" rel="stylesheet">
+    <link href="~/assets/css/owl.transitions.css" rel="stylesheet">
+    <link href="~/assets/css/jquery.fancybox.css" rel="stylesheet">
+    <link href="~/assets/css/odometer-theme-default.css" rel="stylesheet">
+    <link href="~/assets/css/style.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/398be4b728.js"></script>
 
-        #t2_1 {
-            left: 35px;
-            bottom: 963px;
-            letter-spacing: 0.1px;
-            word-spacing: -0.1px;
-        }
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-        #t3_1 {
-            left: 35px;
-            bottom: 866px;
-            letter-spacing: 0.2px;
-        }
+</head>
 
-        #t4_1 {
-            left: 35px;
-            bottom: 838px;
-            letter-spacing: 0.3px;
-        }
+<body>
 
-        #t5_1 {
-            left: 35px;
-            bottom: 811px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.2px;
-        }
+    <!-- start page-wrapper -->
+    <div class="page-wrapper">
 
-        #t6_1 {
-            left: 264px;
-            bottom: 750px;
-            word-spacing: 0.3px;
-        }
+        <!-- start preloader -->
+        <div class="preloader">
+            <div class="sk-folding-cube">
+                <div class="sk-cube1 sk-cube"></div>
+                <div class="sk-cube2 sk-cube"></div>
+                <div class="sk-cube4 sk-cube"></div>
+                <div class="sk-cube3 sk-cube"></div>
+            </div>
+        </div>
+        <!-- end preloader -->
+        <!-- Start header -->
+        <header id="header" class="site-header header-style-3">
+            <nav class="navigation navbar navbar-default">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="open-btn"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+                        <a class="navbar-brand" href="index.html"><img src="~/assets/images/logo-2.png" alt></a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse navigation-holder">
+                        <button class="close-navbar"><i class="ti-close"></i></button>
+                    </div>
+                    <!-- end of nav-collapse -->
 
-        #t7_1 {
-            left: 35px;
-            bottom: 676px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.1px;
-        }
-
-        #t8_1 {
-            left: 250px;
-            bottom: 581px;
-            letter-spacing: 0.4px;
-        }
-
-        #t9_1 {
-            left: 134px;
-            bottom: 533px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.3px;
-        }
-
-        #ta_1 {
-            left: 134px;
-            bottom: 503px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.6px;
-        }
-
-        #tb_1 {
-            left: 134px;
-            bottom: 474px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.4px;
-        }
-
-        #tc_1 {
-            left: 134px;
-            bottom: 444px;
-            letter-spacing: 0.1px;
-        }
-
-        #td_1 {
-            left: 677px;
-            bottom: 581px;
-            letter-spacing: 0.2px;
-        }
-
-        #te_1 {
-            left: 569px;
-            bottom: 533px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.5px;
-        }
-
-        #tf_1 {
-            left: 569px;
-            bottom: 503px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.4px;
-        }
-
-        #tg_1 {
-            left: 569px;
-            bottom: 474px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.4px;
-        }
-
-        #th_1 {
-            left: 301px;
-            bottom: 324px;
-            letter-spacing: -0.1px;
-            word-spacing: 0.3px;
-        }
-
-        #ti_1 {
-            left: 35px;
-            bottom: 249px;
-            letter-spacing: -0.1px;
-            word-spacing: 0.2px;
-        }
-
-        #tj_1 {
-            left: 168px;
-            bottom: 202px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.3px;
-        }
-
-        #tk_1 {
-            left: 168px;
-            bottom: 176px;
-            letter-spacing: 0.1px;
-        }
-
-        #tl_1 {
-            left: 167px;
-            bottom: 83px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.5px;
-        }
-
-        #tm_1 {
-            left: 167px;
-            bottom: 57px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.4px;
-        }
-
-        #tn_1 {
-            left: 167px;
-            bottom: 32px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.3px;
-        }
-
-        #to_1 {
-            left: 610px;
-            bottom: 194px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.3px;
-        }
-
-        #tp_1 {
-            left: 610px;
-            bottom: 168px;
-            letter-spacing: 0.2px;
-        }
-
-        #tq_1 {
-            left: 610px;
-            bottom: 143px;
-            letter-spacing: 0.1px;
-        }
-
-        #tr_1 {
-            left: 607px;
-            bottom: 77px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.4px;
-        }
-
-        #ts_1 {
-            left: 607px;
-            bottom: 51px;
-            letter-spacing: 0.1px;
-            word-spacing: 0.6px;
-        }
-
-        .s1_1 {
-            FONT-SIZE: 146.7px;
-            FONT-FAMILY: LiberationSans_15;
-            color: rgba(255, 255, 255, 0);
-        }
-
-        .s2_1 {
-            FONT-SIZE: 268.9px;
-            FONT-FAMILY: LiberationSans_15;
-            color: rgba(255, 255, 255, 0);
-        }
-
-        .s3_1 {
-            FONT-SIZE: 91.6px;
-            FONT-FAMILY: LiberationSans_15;
-            color: rgba(255, 255, 255, 0);
-        }
-
-        .s4_1 {
-            FONT-SIZE: 128.4px;
-            FONT-FAMILY: LiberationSans-Bold_x;
-            color: rgba(255, 255, 255, 0);
-        }
-
-        .s5_1 {
-            FONT-SIZE: 91.6px;
-            FONT-FAMILY: LiberationSans-Bold_x;
-            color: rgba(255, 255, 255, 0);
-        }
-
-        .s6_1 {
-            FONT-SIZE: 140.5px;
-            FONT-FAMILY: LiberationSans_15;
-            color: rgba(255, 255, 255, 0);
-        }
-
-        .s7_1 {
-            FONT-SIZE: 85.6px;
-            FONT-FAMILY: LiberationSans_15;
-            color: rgba(255, 255, 255, 0);
-        }
-    </style>
-    <!-- End inline CSS -->
-    <!-- Begin embedded font definitions -->
-    <style id="fonts1" type="text/css">
-
-
-
-    </style>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: white;
-            height: 100vh;
-        }
-
-        #login .container #login-row #login-column #login-box {
-            margin-top: 220px;
-            max-width: 600px;
-            height: 220px;
-            border: 1px solid #9C9C9C;
-            background-color: #EAEAEA;
-        }
-
-            #login .container #login-row #login-column #login-box #login-form {
-                padding: 20px;
-            }
-
-                #login .container #login-row #login-column #login-box #login-form #register-link {
-                    margin-top: -85px;
-                }
-    </style>
-    <!-- End embedded font definitions -->
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!------ Include the above in your HEAD tag ---------->
-}
-
-
-
-<div id="p1" style="overflow: hidden; position: relative; background-color: white; width: 935px; height: 1210px;">
-
-
-    <!-- Begin page background -->
-    <div id="pg1Overlay" style="width:100%; height:100%; position:absolute; z-index:1; background-color:rgba(0,0,0,0); -webkit-user-select: none;"></div>
-    <div id="pg1" style="-webkit-user-select: none;"><object width="935" height="1210" data="1/1.svg" type="image/svg+xml" id="pdf1" style="width:935px; height:1210px; -moz-transform:scale(1); z-index: 0;"></object></div>
-    <!-- End page background -->
-    <!-- Begin text definitions (Positioned/styled in CSS) -->
-    <div id="t1_1" class="t s1_1">How to ace a</div>
-    <div id="t2_1" class="t s2_1">Skype interview</div>
-    <div id="t3_1" class="t s3_1">Online job interviews have become the norm, with more than 70% of </div>
-    <div id="t4_1" class="t s3_1">companies </div>
-    <div id="t5_1" class="t s3_1">conducting them regularly. Here’s how to ace your next one.</div>
-    <div id="t6_1" class="t s4_1">1. Perfect your profile pic</div>
-    <div id="t7_1" class="t s5_1">Make sure your Skype profile photo is appropriate. </div>
-    <div id="t8_1" class="t s6_1">Do</div>
-    <div id="t9_1" class="t s7_1">Use a hi-res, well-lit photo</div>
-    <div id="ta_1" class="t s7_1">Dress professionally</div>
-    <div id="tb_1" class="t s7_1">Use a solid-colored, light</div>
-    <div id="tc_1" class="t s7_1">background</div>
-    <div id="td_1" class="t s6_1">Don’t</div>
-    <div id="te_1" class="t s7_1">Leave your profile photo blank</div>
-    <div id="tf_1" class="t s7_1">Use an icon instead of a photo</div>
-    <div id="tg_1" class="t s7_1">Use a selfie or group shot</div>
-    <div id="th_1" class="t s4_1">2. Upgrade your tech</div>
-    <div id="ti_1" class="t s5_1">A poor connection can ruin your prospects.</div>
-    <div id="tj_1" class="t s7_1">Make sure you have enough</div>
-    <div id="tk_1" class="t s7_1">bandwidth</div>
-    <div id="tl_1" class="t s7_1">Use a wired connection or</div>
-    <div id="tm_1" class="t s7_1">locate as close to your</div>
-    <div id="tn_1" class="t s7_1">router as possible</div>
-    <div id="to_1" class="t s7_1">Download the latest </div>
-    <div id="tp_1" class="t s7_1">software</div>
-    <div id="tq_1" class="t s7_1">updates</div>
-    <div id="tr_1" class="t s7_1">Use a hi-res camera and a</div>
-    <div id="ts_1" class="t s7_1">reliable headset or speaker</div>
-
-    <!-- End text definitions -->
-
-
-</div>
-
-
-
-
-<form asp-action="VerifyCandidateCode">
-    <div id="login">
-        <div class="container">
-            <div id="login-row" class="row justify-content-center align-items-center">
-                <div id="login-column" class="col-md-6">
-                    <div id="login-box" class="col-md-12">
-                        <h3 class="text-center text-info">Login</h3>
-                        <div class="form-group">
-                            <label for="username" class="text-info align">Please Enter Your SignIn Code:</label><br>
-                            <input type="text" asp-for="CandidateSignInCode" class="form-control">
+                </div>
+                <!-- end of container -->
+            </nav>
+        </header>
+        <hr />
+        <!-- end of header -->
+        <!-- start mission-vision-section -->
+        <!-- start services-section-s3 -->
+        <section class="services-section-s3">
+            <div class="container">
+                <div class="row">
+                    <div class="col col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                        <div class="title-area mb-5">
+                            <h4>General Guidelines</h4>
                         </div>
-                        <div class="form-group">
-                            <input type="submit" name="submit" class="btn btn-info btn-md float-right" value="submit">
-                            <div><label style="color:red">@ViewBag.InvalidCandidateCode</label></div>
+                    </div>
+                </div>
+                <div class="container c-login">
+                    <div class="row my-1">
+                        <div class="col-sm-8 text-center bg-success center-block py-1">
+                            <h3>Please use the latest Google Chrome Browser for the best results</h3>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col-sm-8 text-center bg-success center-block py-1">
+                            <h3>Test your laptop</h3>
+                            <h4>A poor connection can ruin your prospects.</h4>
+                        </div>
+                        <div class="col-sm-8 bg-light-gray center-block">
+                            <div class="card col-sm-6  my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-3 text-center"> <i class="fas fa-tachometer-alt fa-3x"></i> </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Make sure you have enough
+                                                bandwidth
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card col-sm-6  my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-3 text-center"> <i class="fas fa-download fa-3x"></i> </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Download the latest software
+                                                updates
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card col-sm-6  my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-3 text-center"> <i class="fas fa-wifi fa-3x"></i> </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Use a wired connection or
+                                                locate as close to your
+                                                router as possible
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card col-sm-6 my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-3 text-center"> <i class="fas fa-headset  fa-3x"></i> </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Use a hi-res camera and a
+                                                reliable headset or speaker
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col-sm-8 text-center bg-success center-block">
+                            <h3>Prepare for the call</h3>
+                            <h4>Thorough prep is essential to a successful online job interview.</h4>
+                            <br>
+                        </div>
+                        <div class="col-sm-8 bg-light-gray center-block">
+                            <div class="card col-sm-12  my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-2 text-center"> <i class="fas fa-home fa-3x"></i> </div>
+                                    <div class="col-md-10">
+                                        <div class="card-body">
+                                            <ul class="list-unstyled">
+                                                <li><i class="ti-check-box"></i> Find a clean and quiet venue</li>
+                                                <li><i class="ti-check-box"></i> Use a simple, light-colored background</li>
+                                                <li><i class="ti-check-box"></i> Position the light source in front of you</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
+
+                            <div class="card col-sm-12  my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-2 text-center"> <i class="fas fa-laptop fa-3x"></i> </div>
+                                    <div class="col-md-10">
+                                        <div class="card-body">
+                                            <ul class="list-unstyled">
+                                                <li><i class="ti-check-box"></i> Make a test call to check your equipment one day before</li>
+                                                <li><i class="ti-check-box"></i> Adjust your webcam to frame your face</li>
+                                                <li><i class="ti-check-box"></i> Check your privacy settings to make sure you can receive the interviewer’s call</li>
+                                                <li><i class="ti-check-box"></i> Close any programs not needed for the interview</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="card col-sm-12  my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-2 text-center"> <i class="fas fa-file-alt fa-3x"></i> </div>
+                                    <div class="col-md-10">
+                                        <div class="card-body">
+                                            <ul class="list-unstyled">
+                                                <li><i class="ti-check-box"></i> Print a copy of your resume, and have a file ready to IM or screen share</li>
+                                                <li><i class="ti-check-box"></i> Place a sticky note with your talking points beside your webcam</li>
+                                                <li><i class="ti-check-box"></i> Practice answering interview questions on camera</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="row my-1">
+                        <div class="col-sm-8 text-center bg-success center-block py-1">
+
+                            <h3>Hone your nonverbal skills</h3>
+                            <h4>Your body language and tone of voice help convey meaning in addition to the words you say.</h4>
+
+                        </div>
+                        <div class="col-sm-8 bg-light-gray center-block">
+
+                            <div class="card col-sm-6 my-1 text-center ">
+                                <i class="fas fa-check-circle fa-3x text-success"></i>
+                                <div class="card-body">
+                                    <h3 class="card-title"> Do</h3>
+                                    <ul class="list-unstyled text-left">
+                                        <li><i class="ti-check-box"></i> Dress the part</li>
+                                        <li><i class="ti-check-box"></i> Speak clearly and with a positive tone</li>
+                                        <li><i class="ti-check-box"></i> Look at the camera, not the screen</li>
+                                        <li><i class="ti-check-box"></i> Nod your head to show understanding</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="card col-sm-6 my-1 text-center ">
+                                <i class="fas fa-times-circle fa-3x text-danger"></i>
+                                <div class="card-body">
+                                    <h3 class="card-title">Don’t</h3>
+                                    <ul class="list-unstyled text-left">
+                                        <li><i class="ti-check-box"></i> Dress the part</li>
+                                        <li><i class="ti-check-box"></i> Speak clearly and with a positive tone</li>
+                                        <li><i class="ti-check-box"></i> Look at the camera, not the screen</li>
+                                        <li><i class="ti-check-box"></i> Nod your head to show understanding</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+
+                    <div class="row my-1">
+                        <div class="col-sm-8 text-center bg-success  center-block py-1">
+
+                            <h3>End on a positive note</h3>
+                            <h4>
+                                The end of the interview is a chance to leave a lasting impression.
+                            </h4>
+
+                        </div>
+                        <div class="col-sm-8 bg-light-gray center-block">
+                            <div class="card col-sm-6  my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-3 text-center"> <i class="fas fa-street-view fa-3x"></i> </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                State your interest in the
+                                                position
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card col-sm-6  my-1">
+                                <div class="row no-gutters">
+                                    <div class="col-md-3 text-center"> <i class="fas fa-handshake fa-3x"></i> </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">
+                                                Thank the interviewer for his
+                                                or her time
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col-sm-8 text-center bg-success center-block py-1">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                <label class="form-check-label" for="inlineCheckbox1">I agree with TechScreen360 Terms and conditions.</label>
+                            </div>
+                        </div>
+                    </div>
+                            <div class="row my-1">
+                                <div class="col-sm-8 text-center bg-success center-block py-1">
+                                    <form asp-action="VerifyCandidateCode" class="form-inline login-form">
+
+                                        <label class=" " for="email-login">Login : </label>
+                                        <input type="text" asp-for="CandidateSignInCode" class="form-control form-control-lg" placeholder="Please Enter Your SingnIn Code">
+                                        <button type="submit" class="btn btn-outline-success ">Login</button>
+                                        <label style="color:red">@ViewBag.InvalidCandidateCode</label>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end container -->
+</section>
+        <!-- end services-section-s3 -->
+        <!-- end mission-vision-section -->
+        <!-- start experience-section -->
+        <!-- end experience-section -->
+        <!-- start testimonials-section-s2 -->
+        <!-- end testimonials-section-s2 -->
+        <!-- start projects-sections-s2 -->
+        <!-- end projects-sections-s2 -->
+        <!-- start team-section -->
+        <!-- end team-section -->
+        <!-- start site-footer -->
+        <footer class="site-footer">
+            <!--<div class="upper-footer">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col col-lg-3 col-md-3 col-sm-6">
+                                    <div class="widget about-widget">
+                                        <div class="logo widget-title">
+                                            <img src="~/assets/images/footer-logo.png" alt>
+                                        </div>
+                                        <p>Samsa was a travelling salesman  and above it there hung a picture that he had recently cut out of an illustrated magazine and housed</p>
+                                    </div>
+                                </div>
+                                <div class="col col-lg-3 col-md-3 col-sm-6">
+                                    <div class="widget link-widget">
+                                        <div class="widget-title">
+                                            <h3>Navigation</h3>
+                                        </div>
+                                        <ul>
+                                            <li><a href="#">About us</a></li>
+                                            <li><a href="#">Contact us</a></li>
+                                            <li><a href="#">Case Studies</a></li>
+                                            <li><a href="#">Our Services</a></li>
+                                        </ul>
+                                        <ul>
+                                            <li><a href="#">Provacu Policy</a></li>
+                                            <li><a href="#">Contact</a></li>
+                                            <li><a href="#">Testimonials</a></li>
+                                            <li><a href="#">News</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col col-lg-3 col-md-3 col-sm-6">
+                                    <div class="widget contact-widget service-link-widget">
+                                        <div class="widget-title">
+                                            <h3>Contact Info</h3>
+                                        </div>
+                                        <ul>
+                                            <li>Phone: ++87655285654 </li>
+                                            <li>Email: jhair@demo.com</li>
+                                            <li>Office Time: 10AM- 5PM</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col col-lg-3 col-md-3 col-sm-6">
+                                    <div class="widget newsletter-widget">
+                                        <div class="widget-title">
+                                            <h3>Newsletter</h3>
+                                        </div>
+                                        <p>You will be notified when somthing new will be appear.</p>
+                                        <form>
+                                            <div class="input-1">
+                                                <input type="email" class="form-control" placeholder="Email Address *" required>
+                                            </div>
+                                            <div class="submit clearfix">
+                                                <button type="submit"><i class="ti-email"></i></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+            <div class="lower-footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="separator"></div>
+                        <div class="col col-xs-12">
+                            <p class="copyright">Copyright &copy; 2019 TechScreen 360. All rights reserved.</p>
+                            <div class="social-icons">
+                                <ul>
+                                    <li><a href="#"><i class="ti-facebook"></i></a></li>
+                                    <li><a href="#"><i class="ti-twitter-alt"></i></a></li>
+                                    <li><a href="#"><i class="ti-linkedin"></i></a></li>
+                                    <li><a href="#"><i class="ti-pinterest"></i></a></li>
+                                    <li><a href="#"><i class="ti-vimeo-alt"></i></a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </footer>
+        <!-- end site-footer -->
+
     </div>
-</form>
+    <!-- end of page-wrapper -->
+    <!-- All JavaScript files
+        ================================================== -->
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap.min.js"></script>
+
+    <!-- Plugins for this template -->
+    <script src="~/assets/js/jquery-plugin-collection.js"></script>
+
+    <!-- Custom script for this template -->
+    <script src="~/assets/js/script.js"></script>
+</body>
+</html>
+
+
 

@@ -35,11 +35,11 @@ namespace TechScreen.Services
                 screening.LastUpdatedBy = userEmail;
                 screening.ReviewerStatus= EnumScreeningStatus.Screening_Invitation_Sent.ToString();
                 screening.AdminStatus = EnumScreeningStatus.Screening_Invitation_Sent.ToString();
-                screening.Status = EnumScreeningStatus.AwaitingCandidateResponse.ToString();
+                screening.Status = EnumScreeningStatus.In_Process.ToString();
 
                 foreach (var candidate in screening.ScreeningCandidate)
                 {
-                    candidate.ScreeningStatus = EnumScreeningStatus.AwaitingCandidateResponse.ToString();
+                    candidate.ScreeningStatus = EnumScreeningStatus.Awaiting_Candidate_Response.ToString();
                     candidate.LastUpdated = DateTime.Now;
                     candidate.LastUpdatedBy = userEmail;
                     candidate.CandidateSignInCode = Guid.NewGuid().ToString();
@@ -58,18 +58,31 @@ namespace TechScreen.Services
                     sendGridMessage.SetSubject("Video Interview Request From " + screening.HiringCompanyName);
                     sendGridMessage.AddTo(candidate.CandidateEmail);
                     sendGridMessage.SetFrom(new EmailAddress("noreply@techscreen360.com", "TechScreen360"));
-                    sendGridMessage.AddContent(MimeType.Html, "<p>Dear" +candidate.CandidateFirstName + " " + candidate.CandidateLastName +"" +
-                        ",</br></br>" +
-                        "You have received Video Interview Request from :"+ screening.HiringCompanyName + "</br></br>" +
-                        "<b>Please follow below instruction to complete your video interview:</b></b>" +
-                        "1. This is a video interview so make sure to test your laptop's webcam and audio device is working fine.</br>" +
-                        "2. For best results, please use <b>latest Google Chrome Browser</b>" +
-                        "3. <b>Click on the link below:</br></br>" +
-                        "4. https://www.techscreen360.com/jobcandidate" +
-                        "5.  Your sign in Code is :" + candidate.CandidateSignInCode + "  .The sign in code will expire 24 hours after you receive this email.</br></br>" +
-                        "Best of luck for your interview. If you come across any issue, please contact InterviewSupport@techscreen360.com" +
-                        "</p>"
-                        );
+
+                    sendGridMessage.AddContent(MimeType.Html,
+                                "Dear " + candidate.CandidateFirstName + " " + candidate.CandidateLastName + ", " +
+                                "<br><br>" +
+                                "Congratulations ! You have received Video Interview Request from  <b>"+ screening.HiringCompanyName + " .</b><br><br>" +
+                                 "Please follow below instructions to complete your video interview:<br><br>" +
+                                 "1. This is a video interview so make sure to test your laptop's webcam and audio device is working fine." +
+                                 "<br><br>" +
+                                 "2. For the best results, please use latest <b>Google Chrome Browser.</b>" +
+                                 "<br><br>" +
+                                 "3. Click on the following link : <b> https://www.techscreen360.com/jobapplicant</b>" +
+                                 "<br><br>" +
+                                " <b>Your sign in Code is :</b> " + candidate.CandidateSignInCode+
+                                "<br><br>" +
+                                "The sign in code will expire 48 hours after you receive this email." +
+                                "<br><br>" +
+                                "Best of luck for your interview. " +
+                                "<br><br>" +
+                                "If you come across any issue, please contact InterviewSupport@techscreen360.com" +
+                                "<br><br><br>" +
+                                "Regards," +
+                                "<br>" +
+                                "TechScreen360 InterviewSupport"
+
+                        ) ;
 
                     EmailUtility.SendGridMessage(sendGridMessage).Wait();
                 }
@@ -211,7 +224,7 @@ namespace TechScreen.Services
                 screening.ReviewerId = reviewerId;
                 screening.LastUpdated = DateTime.Now;
                 screening.LastUpdatedBy = userName;
-                screening.Status = EnumScreeningStatus.InProcess.ToString();
+                screening.Status = EnumScreeningStatus.In_Process.ToString();
                 screening.AdminStatus = EnumScreeningStatus.Awaiting_Reviewer_Response.ToString();
                 screening.ReviewerStatus = EnumScreeningStatus.Assigned.ToString();
 
@@ -222,7 +235,7 @@ namespace TechScreen.Services
                     candidate.ReviewerId = reviewerId;
                     candidate.LastUpdated = DateTime.Now;
                     candidate.LastUpdatedBy = userName;
-                    candidate.ScreeningStatus = EnumScreeningStatus.InProcess.ToString();
+                    candidate.ScreeningStatus = EnumScreeningStatus.In_Process.ToString();
                 }
 
                 this.context.Screening.Update(screening);
@@ -278,7 +291,7 @@ namespace TechScreen.Services
             try
             {
                 var screeningCandidate = this.context.ScreeningCandidate.Where(x => x.CandidateSignInCode == candidateCode).FirstOrDefault();
-                screeningCandidate.ScreeningStatus = EnumScreeningStatus.CandidateResponseReceived.ToString();
+                screeningCandidate.ScreeningStatus = EnumScreeningStatus.Candidate_Response_Received.ToString();
                 screeningCandidate.CandidateSignInCode = "";
 
                 this.context.ScreeningCandidate.Update(screeningCandidate);

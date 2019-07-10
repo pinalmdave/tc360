@@ -9983,9 +9983,10 @@ a, button, .btn {
 }
 
     .app-header__logo .logo-src {
-        height: 23px;
-        width: 97px;
-        background: url(/assetsInner/images/logo-inverse.png)
+        height: 45px;
+        width: 150px;
+        background: url(../images/logo.png);
+        background-size: 100% 100%;
     }
 
 .app-header__menu, .app-header__mobile-menu {

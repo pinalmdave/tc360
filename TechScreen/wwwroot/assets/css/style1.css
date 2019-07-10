@@ -199,7 +199,7 @@ img {
 }
 
 .section-padding {
-  padding: 0px 0;
+  padding: 110px 0;
 }
 
 .section-padding-01 {
@@ -8111,28 +8111,6 @@ img {
     }
 }
 
-.technology-slider .owl-nav {position: absolute; width: 100%; top: 40%;}
-.technology-slider .owl-item {z-index: 9999; position: relative; }
-.owl-nav .owl-next::before{ content: "\f103";  font-family: "Flaticon"; background: none !important; color: #87d271; font-size: 40px; }
-.owl-nav .owl-next{  background: none !important; color: #f9f9f9 !important; float: right; margin-right:-25px !important;}
-.owl-nav .owl-prev::before{ content: "\f106";  font-family: "Flaticon"; background: none !important; color: #87d271; font-size: 40px; }
-.owl-nav .owl-prev{  background: none !important; color: #f9f9f9 !important; float: left; margin-left:-25px !important; }
-
-.bg-light-gray {background-color: #f9f9f9;}
-.my-1 {margin-top:20px; margin-bottom: 20px;}
-.py-1 { padding-top: 20px; padding-bottom: 20px; }
-.center-block {float: none !important; display: table;} 
-.c-login .bg-success {background: #87d371; color: #FFF !important;}
-.c-login .bg-success h3 { color: #FFF !important;}
-.c-login .bg-success h4 { color: #FFF !important; font-size: 16px; }
-.c-login .card i {color: #87d371;}
-.c-login .card i.fa-times-circle {color: #cf0000;}
-
-.login-form {font-size: 20px;}
-.login-form input {height: 50px; border: 0px; width: 40% !important; font-size: 18px; border-radius: 0px;  }
-.login-form .btn {height: 50px; border: 0px; text-transform: uppercase; background: #2b2e3a !important; border-radius: 0px; font-weight: 700;  font-size: 18px; padding: 10px 30px; }
-
-.login-form .btn:hover {color: #FFF;}
 
 
 

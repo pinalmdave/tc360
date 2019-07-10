@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using TechScreen.DBEntities;
 using TechScreen.Models;
 using TechScreen.Services;
@@ -42,22 +44,7 @@ namespace TechScreen.Controllers
 
 
         private List<ScreeningModel> GetScreenings()
-        {
-            //Email Example
-            //var emailViewModel = new EmailViewModel();
-            //emailViewModel.FromEmail = "admin@appinfinitytech.com";
-            //emailViewModel.Subject = "Test Email from TechScreen360";
-
-            //List<EmailRecipient> lstEmailRecipients = new List<EmailRecipient>();
-            //var recipient1 = new EmailRecipient();
-            //recipient1.RecipientName = "Pinal Dave";
-            //recipient1.RecipientEmail = "pinalmdave@gmail.com";
-            //lstEmailRecipients.Add(recipient1);
-            //emailViewModel.lstEmailRecipient = lstEmailRecipients;
-            //EmailUtility.SendGridMessage(emailViewModel).Wait();
-
-            //
-
+        {  
             var email = User.Claims.Where(x => x.Type == "emails").FirstOrDefault().Value;
 
             var screenings = this.screeningRepository.GetUserScreening(email);

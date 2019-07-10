@@ -109,15 +109,11 @@
     <div class="page-title-wrapper">
         <div class="page-title-heading">
             <div class="page-title-icon">
-                <i class="pe-7s-home icon-gradient bg-mean-fruit">
-                </i>
+                <i class="fas fa-tachometer-alt"></i>
             </div>
             <div>
                 Admin Dashboard
             </div>
-        </div>
-        <div class="page-title-actions">
-            <a asp-area="" asp-controller="ClientDashboard" asp-action="NewScreening" class="btn btn-primary">Add New Job requirement</a>
         </div>
     </div>
 </div>
@@ -125,8 +121,8 @@
 
 
 <div class="main-card mb-3 card">
-    <div class="card-header" style="background-color:lightgray;">
-        Screening Summary
+    <div class="card-header" style="background-color:blue;">
+        <p style="color: white">Screening Summary</p>
     </div>
     <div class="card-body">
         <div class="form-row">
@@ -151,18 +147,21 @@
                                 var cnt = 0;
                             }
                             @foreach (var item in Model.lstScreening)
-                            { 
+                            {
+                                var adminStatus = item.AdminStatus.Replace('_', ' ');
+                                var reviewerStatus = item.ReviewerStatus.Replace('_', ' ');
+
                                 cnt = cnt + 1;
                                 <tr>
                                     <td data-toggle="collapse" data-target="#accordion-@cnt.ToString()" class="clickable">
                                         <i class="fas fa-plus iconclass"></i>
                                     </td>
                                     <td style="width:50px;">
-                                        @if (item.AdminStatus == "New")
+                                        @if (adminStatus == "New")
                                         {
                                             <div class="badge badge-danger">@item.Status</div>
                                         }
-                                        @if (item.AdminStatus == "Awaiting_Reviewer_Response" || item.AdminStatus == "Screening_Invitation_Sent" || item.AdminStatus == "AwaitingCandidateResponse")
+                                        @if (adminStatus == "Awaiting Reviewer Response" || item.AdminStatus == "Screening Invitation Sent" || item.AdminStatus == "Awaiting Candidate Response")
                                         {
                                             TimeSpan span = DateTime.Now - item.LastUpdated ;
                                             var totalHours = Convert.ToInt32(span.TotalHours);
@@ -179,7 +178,7 @@
 
                                     </td>
                                     <td style="width:150px;">
-                                        @if (item.AdminStatus == "New")
+                                        @if (adminStatus == "New")
                                         {
                                             <button class="btn btn-link assignScreeningButton" value="@item.ScreeningId&0">Assign</button>
                                         }
@@ -240,12 +239,13 @@
                                                                         <th scope="col">Candidate Email</th>
                                                                         <th scope="col">Candidate Contact No</th>
                                                                         <th scope="col">Status</th>
-                                                                        <th scope="col"></th>
+                                                                        <th scope="col">Action</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach (var candidate in item.ScreeningCandidate)
                                                                     {
+                                                                        var candidateStatus = @candidate.ScreeningStatus.Replace('_', ' ');
                                                                     <tr>
                                                                         <td>
                                                                             @candidate.CandidateFirstName
@@ -259,11 +259,26 @@
                                                                         <td>
                                                                             @candidate.CandidatePhone
                                                                         </td>
-                                                                        <td>
-                                                                            @candidate.ScreeningStatus
+                                                                        <td class="text-center">
+                                                                            @if (candidateStatus == "Completed")
+                                                                            {
+                                                                                <div class="badge badge-success">@candidate.ScreeningStatus</div>
+
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <div class="badge badge-warning">@candidateStatus</div>
+                                                                            }
                                                                         </td>
-                                                                        <td>
-                                                                            <Button class="btn btn-link del"><i class="fas fa-user-times" style="color:Red;"></i></Button>
+                                                                        <td class="text-center">
+                                                                            @if (candidate.ScreeningStatus == "Completed")
+                                                                            {
+                                                                                <a href="/Reviewer/ScoreCard?id=@candidate.CandidateId" class="btn btn-primary">View Score Card</a>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <button type="button" id="PopoverCustomT-1" class="btn btn-sm">None</button>
+                                                                            }
                                                                         </td>
                                                                     </tr>
                                                                     }

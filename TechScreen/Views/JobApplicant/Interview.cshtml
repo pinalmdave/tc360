@@ -18,43 +18,53 @@
     <script>
         $(document).ready(function () {
 
+            $("#divInterviewScreen").hide();
+            $("#divComplete").hide();
+            $("#btnFinishInterview").hide();
+            $("#btnStartInterview").attr("disabled", true);
+
+            $(".chkScreen").change(function () {
+                if ($('.chkScreen:checked').length == $('.chkScreen').length) {
+                    $("#btnStartInterview").attr("disabled", false);
+                }
+                else {
+                    $("#btnStartInterview").attr("disabled", true);
+                }
+            });
+
             var candidateCode = '@ViewBag.CandidateCode'
             var jsonString = '@jsonObject';
             var questions = JSON.parse(jsonString.replace(/&quot;/g, '"'));
             var totalQuestions = '@Model.Count';
             var recorder;
             var video = document.querySelector('video');
-            
-            $("#btnStartInterview").hide();
-            $("#btnFinishInterview").hide();
-            $("#divInterview").hide();
-            $("#divComplete").hide();
 
-            $("#btnCheckWebcam").click(function (e) {
-                e.preventDefault();
-                $("#btnStartInterview").show();
-                $("#btnCheckWebcam").hide();
-                $("#divInterview").show();
-                $("#btnNext").hide();
+            // $("#btnStartInterview").hide();
 
-                startRecording();
-            });
+
+            //$("#btnCheckWebcam").click(function (e) {
+            //    e.preventDefault();
+            //    $("#btnStartInterview").show();
+            //    $("#btnCheckWebcam").hide();
+            //    $("#divInterviewScreen").show();
+            //    $("#btnNext").hide();
+
+            //    startRecording();
+            //});
 
             $("#btnStartInterview").click(function (e) {
-
                 e.preventDefault();
-
-                recorder.stopRecording(stopTestingCallback);
-
-                startRecording();
-
-                $("#divInterview").show();
+                //recorder.stopRecording(stopTestingCallback);
+                $("#divStart").hide();
+                $("#divInterviewScreen").show();
                 $("#btnStartInterview").hide();
-                $("#btnCheckWebcam").hide();
+                //$("#btnCheckWebcam").hide();
                 $("#btnNext").show();
 
-                $("#lblQuestionNo").text("Question " + questions[0].QuestionId + " of " + totalQuestions);
+                $("#lblQuestionNo").text("Question " + questions[0].QuestionId + " of " + totalQuestions + ": ");
                 $("#lblQuestionText").text(questions[0].QuestionText);
+
+                startRecording();
             });
 
             var cnt = 1;
@@ -63,7 +73,7 @@
                 e.preventDefault();
 
                 if (cnt < totalQuestions) {
-                    $("#lblQuestionNo").text("Question " + questions[cnt].QuestionId + " of " + totalQuestions);
+                    $("#lblQuestionNo").text("Question " + questions[cnt].QuestionId + " of " + totalQuestions + ": ");
                     $("#lblQuestionText").text(questions[cnt].QuestionText);
                     recorder.stopRecording(stopRecordingCallback);
                     startRecording();
@@ -79,7 +89,8 @@
             $("#btnFinishInterview").click(function (e) {
                 e.preventDefault();
                 recorder.stopRecording(stopRecordingCallback);
-                $("#divStart").hide();
+                $("#divInterviewScreen").hide();
+                $("#btnFinishInterview").hide();
                 $("#divComplete").show();
 
                 $.ajax({
@@ -159,47 +170,134 @@
 
 <div class="container" id="divStart">
     <div class="row">
-        <label id="lblTotalQuestions">Total Questions: @Model.Count</label>
-    </div>
-
-    <div class="row">&nbsp;</div>
-
-    <div id="divInterview">
-        <div class="row">
-            <video controls autoplay playsinline></video>
-        </div>
-
-        <div class="row">&nbsp;</div>
-
-        <div class="row" id="divQuestions">
-            <div class="form-group">
-                <h3><label id="lblQuestionNo"></label></h3>
+        <div class="col-md-12">
+            <div class="card-shadow-primary border mb-3 card card-body border-primary">
+                <h5 class="card-title">Welcome CandidateName</h5>
                 <hr />
-                <h3><label id="lblQuestionText"></label></h3>
-                <hr />
-                <button id="btnNext" class="btn btn-primary">Next Question</button>
+                <ul>
+                    <li>
+                        This is a recorded video interview session and your response will be shared with the stackholders (i.e. interview reviewer and/or individuals
+                        authorized to make hiring decision for the position you are being interviewed for).
+                        <b>We respect your privacy,</b> your recording is confidential and it will not be shared with anyone else for any reason.
+                        Your recorded response will be permanently deleted from our secure cloud in 7 days (up to 30 days on request of hiring agency).
+                    </li>
+                    <li>
+                        In order to continue with this recorded video interview session, we need access to your webcam and microphone.
+                    </li>
+                    <li>
+                        You may get a pop-up or warning message on click of <b>Start Interview</b> button. You need to allow access to webcam and microphone in order to continue.
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 
     <div class="row">
-        <div class="form-group">
-            <button id="btnCheckWebcam" class="btn btn-primary">Test your webcam and microphone</button>
-            <button id="btnStartInterview" class="btn btn-primary">Start Interview</button>
-            <button id="btnFinishInterview" class="btn btn-primary">Finish Interview</button>
-            <hr />
+        <div class="col-md-12">
+            <div class="card-shadow-primary border mb-3 card card-body border-primary">
+                <h5 class="card-title">Interview Instructions</h5>
+                <hr />
+                <p><b>Total Questions :</b> @Model.Count | <b>Total Time  :</b> @(Model.Count * 3) minutes.</p>
+                <ul>
+                    <li>
+                        Please use latest <b>Google Chrome Browser.</b>
+                    </li>
+                    <li>
+                        Questions will appear one question at a time on the interview screen. Click <b>Next</b> button to view and answer next question.
+                    </li>
+                    <li>
+                        Please Note: <b>You cannot go back to Previous question.</b>
+                    </li>
+                    <li>
+                        <b>Please speak the question text before answering the question.</b>
+                    </li>
+                    <li>
+                        Inverview will be <b>automatically submitted at the end of @(Model.Count * 3) minutes.</b> However, there is <b>no question specific time limit.</b>
+                    </li>
+                    <li>
+                        Please answer questions precisely, to the point and in a clear voice. If you are unable to answer any question then move to the next question.
+                    </li>
+                    <li>
+                        If you think a particular question is unrelated to the subject or does not make any sense, then please explain it and move to next question.
+                    </li>
+                    <li>
+                        Please don't click browser back or refresh button as it may make interview session invalid.
+                    </li>
+                    <li>
+                        Click on <b>Finish button</b> in order to submit the interview.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-shadow-primary border mb-3 card card-body border-primary">
+                <div class="form-check">
+                    <input class="form-check-input chkScreen" type="checkbox" name="chkInstructions" id="chkInstructions">
+                    <label class="form-check-label" for="chkInstructions">
+                        I confirm that I have carefully read above guidelines and instructions.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input chkScreen" type="checkbox" name="chkTc" id="chkTc">
+                    <label class="form-check-label" for="chkTc">
+                        I agree with the TechScreen360 <a href="#">Terms of Service</a>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="container" id="divInterviewScreen">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-shadow-primary border mb-3 card card-body border-primary">
+                <video controls autoplay playsinline></video>
+                <hr />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card-shadow-primary border mb-3 card card-body border-primary">
+                <h3 class="card-title">
+                    <label id="lblQuestionNo"></label>&nbsp;&nbsp;
+                    <label id="lblQuestionText"></label>
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 float-right">
+            <button id="btnNext" class="btn btn-primary float-right">Next Question</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group float-right">
+                <button id="btnStartInterview" class="btn btn-primary float-right">Start Interview</button>
+                <button id="btnFinishInterview" class="btn btn-primary">Finish Interview</button>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="container" id="divComplete">
-
-    <div class="row">
-        <h1>Thanks for your time to attend the screening. We will send the feedback to the hiring company</h1>
+    <div class="col-md-12">
+        <div class="card-shadow-primary border mb-3 card card-body border-primary">
+            <h3 class="card-title">
+                Congratulations ! You have finished the interview and your response has been saved.
+            </h3>
+            <hr />
+            <h3>For security reasons, we recommend to close this browser window now.</h3>
+        </div>
     </div>
-    <div class="row">&nbsp;</div>
-    <div class="row">
-        <h1>For security reasons. We recommand please close this browser window now</h1>
-    </div>
-
 </div>
+

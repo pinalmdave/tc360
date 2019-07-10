@@ -15,6 +15,9 @@ using TechScreen.ViewModels;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
+using Syncfusion.HtmlConverter;
+using Syncfusion.Pdf;
+using Microsoft.AspNetCore.Hosting;
 
 namespace TechScreen.Controllers
 {
@@ -28,11 +31,13 @@ namespace TechScreen.Controllers
         CloudBlobContainer cloudBlobContainer = null;
         CloudBlobClient cloudBlobClient = null;
 
+        public readonly IHostingEnvironment _hostingEnvironment;
 
-        public ReviewerController(IScreeningRepository _screeningRepository, IMapper mapper)
+        public ReviewerController(IScreeningRepository _screeningRepository, IMapper mapper, IHostingEnvironment hostingEnvironment)
         {
             _mapper = mapper;
             this.screeningRepository = _screeningRepository;
+            this._hostingEnvironment = hostingEnvironment;
         }
 
         public IActionResult Index()
@@ -186,7 +191,30 @@ namespace TechScreen.Controllers
         public IActionResult ScoreCard(int id)
         {
             var result = this.screeningRepository.GetCandidateScoreCard(id);
+
             return View(result);
+        }
+
+        public IActionResult GeneratePDFReportCard(int id)
+        {
+            HtmlToPdfConverter converter = new HtmlToPdfConverter();
+            WebKitConverterSettings settings = new WebKitConverterSettings();
+            settings.WebKitPath = Path.Combine(_hostingEnvironment.ContentRootPath, "QtBinariesWindows");
+            converter.ConverterSettings = settings;
+
+            PdfDocument document = converter.Convert("https://localhost:44349/reviewer/GetScoreCard/"+id.ToString());
+
+            MemoryStream ms = new MemoryStream();
+            document.Save(ms);
+            document.Close(true);
+
+            ms.Position = 0;
+
+            FileStreamResult fileStreamResult = new FileStreamResult(ms, "application/pdf");
+            fileStreamResult.FileDownloadName = "ScoreCard.pdf";
+
+            return fileStreamResult;
+
         }
     }
 }

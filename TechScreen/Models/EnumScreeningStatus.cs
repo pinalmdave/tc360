@@ -9,19 +9,19 @@ namespace TechScreen.Models
     public enum EnumScreeningStatus
     {
         [Display(Name ="Submit Questions")]
-        SubmitQuestions,
+        Submit_Questions,
 
         [Display(Name = "Awaiting Candidate Response")]
-        AwaitingCandidateResponse,
+        Awaiting_Candidate_Response,
 
         [Display(Name = "Awaiting Screening Invitation")]
-        AwaitingScreeningInvitation,
+        Awaiting_Screening_Invitation,
 
         [Display(Name = "Pending Review")]
-        PendingReview,
+        Pending_Review,
 
         [Display(Name = "Candidate Response Received")]
-        CandidateResponseReceived,
+        Candidate_Response_Received,
 
         [Display(Name = "Completed")]
         Completed,
@@ -31,8 +31,9 @@ namespace TechScreen.Models
         Cancelled,
 
         New,
-        
-        InProcess,
+
+        [Display(Name = "In Process")]
+        In_Process,
 
         [Display(Name = "Awaiting Admin Response")]
         Awaiting_Reviewer_Response,

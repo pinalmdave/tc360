@@ -22,8 +22,7 @@
     <div class="page-title-wrapper">
         <div class="page-title-heading">
             <div class="page-title-icon">
-                <i class="pe-7s-home icon-gradient bg-mean-fruit">
-                </i>
+                <i class="fas fa-tachometer-alt"></i>
             </div>
             <div>
                 Reviewer Dashboard
@@ -35,9 +34,11 @@
 
 @foreach (var screen in Model)
 {
+    var status = screen.Status.Replace('_', ' ');
+    var reviewStatus = screen.ReviewerStatus.Replace('_', ' ');
     <div class="main-card mb-3 card">
         <div class="card-header" style="background-color:lightgray">
-            @if (screen.Status == "Submitted" || screen.Status == "New")
+            @if (status == "Submitted" || status == "New")
             {
                 <p style="color:red">New Interview Request</p>
             }
@@ -94,7 +95,7 @@
                     <span>@screen.SpecialRequest</span>
                 </div>
             </div>
-            @if (screen.ReviewerStatus == "Assigned")
+            @if (reviewStatus == "Assigned")
             {
                 <div class="form-row">
                     <div class="col-md-12 mb-3 pull-right">
@@ -127,21 +128,29 @@
                                         {
                                             if (@candidate != null)
                                             {
-                                               
+                                                var candidateStatus = @candidate.ScreeningStatus.Replace('_', ' ');
 
                                                 <tr>
                                                     <td class="text-center">@candidate.CandidateFirstName @candidate.CandidateLastName</td>
                                                     <td class="text-center">
-                                                        <div class="badge badge-warning">@candidate.ScreeningStatus</div>
+                                                        @if (candidateStatus == "Completed")
+                                                        {
+                                                        <div class="badge badge-success">@candidateStatus</div>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="badge badge-warning">@candidateStatus</div>
+                                                        }
                                                     </td>
                                                     <td class="text-center">@candidate.OverallScore</td>
                                                     <td class="text-center">@candidate.LastUpdated</td>
                                                     <td class="text-center">
-                                                        @if (candidate.ScreeningStatus == "CandidateResponseReceived")
+                                                        @if (candidateStatus == "Candidate Response Received")
                                                         {
                                                             <a href="/Reviewer/ReviewInterview?candidateId=@candidate.CandidateId&screeningId=@screen.ScreeningId" class="btn btn-primary">Review Response</a>
                                                         }
-                                                        else if (candidate.ScreeningStatus == "Completed")
+                                                        else if (candidateStatus == "Completed")
                                                         {
                                                             <a href="/Reviewer/ScoreCard?id=@candidate.CandidateId" class="btn btn-primary">View Score Card</a>
                                                         }

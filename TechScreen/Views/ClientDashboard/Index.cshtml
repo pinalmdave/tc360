@@ -232,8 +232,7 @@
     <div class="page-title-wrapper">
         <div class="page-title-heading">
             <div class="page-title-icon">
-                <i class="pe-7s-home icon-gradient bg-mean-fruit">
-                </i>
+                <i class="fas fa-tachometer-alt"></i>
             </div>
             <div>
                 Dashboard
@@ -249,9 +248,9 @@
 @foreach (var screen in Model)
 {
 <div class="main-card mb-3 card">
-    <div class="card-header" style="background-color:lightgray;">
+    <div class="card-header" style="background-color:blue;">
         <div class="col-md-2 mb-3">
-            <p style="margin-bottom: 0rem; margin-top: 1rem; color: white">Date  :&nbsp;&nbsp;@screen.CreatedOn</p>
+            <p style="margin-bottom: 0rem; margin-top: 1rem; color: white">Date  :&nbsp;&nbsp;@Convert.ToDateTime(screen.CreatedOn).ToString("MM/dd/yyyy")</p>
         </div>
         <div class="col-md-3 mb-3">
             <p style="margin-bottom: 0rem; margin-top: 1rem; color: white">Hiring Company / Client  :&nbsp;&nbsp;@screen.HiringCompanyName</p>
@@ -263,11 +262,11 @@
             <p style="margin-bottom: 0rem; margin-top: 1rem; color: white">Job Title  :&nbsp;&nbsp;@screen.JobTitle</p>
         </div>
         <div class="col-md-2 mb-3">
-            <p style="margin-bottom: 0rem; margin-top: 1rem; color: white">Status  :&nbsp;&nbsp;@screen.Status</p>
+            <p style="margin-bottom: 0rem; margin-top: 1rem; color: white">Status  :&nbsp;&nbsp;@screen.Status.Replace('_', ' ')</p>
         </div>
         <div class="col-md-1 mb-3">
             <a style="margin-bottom: 0rem; margin-top: 1rem; color: white; float:right" data-toggle="collapse" href="#collapseExample_@screen.ScreeningId.ToString()" role="button" aria-expanded="false" aria-controls="collapseExample">
-                <i class="fa fa-arrow-down"></i>
+                <i class="fas fa-chevron-circle-down"></i>
             </a>
         </div>
     </div>
@@ -350,7 +349,7 @@
                                         <th class="text-center">Email</th>
                                         <th class="text-center">Contact No</th>
                                         <th class="text-center">Screening Status</th>
-                                        <th class="text-center">Score</th>
+                                        <th class="text-center">Overall Score(1-10)</th>
                                         <th class="text-center">Last Updated</th>
                                         <th class="text-center">Actions</th>
                                     </tr>
@@ -360,19 +359,42 @@
                                     {
                                         if (@candidate != null)
                                         {
-                                            <tr>
-                                                <td class="text-center">@candidate.CandidateFirstName @candidate.CandidateLastName</td>
-                                                <td class="text-center">@candidate.CandidateEmail</td>
-                                                <td class="text-center">@candidate.CandidatePhone</td>
-                                                <td class="text-center">
-                                                    <div class="badge badge-warning">@candidate.ScreeningStatus</div>
-                                                </td>
-                                                <td class="text-center">@candidate.OverallScore</td>
-                                                <td class="text-center">@candidate.LastUpdated</td>
-                                                <td class="text-center">
-                                                    <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-sm">Details</button>
-                                                </td>
-                                            </tr>
+                                            var candidateStatus = candidate.ScreeningStatus.Replace('_', ' ');
+                                    <tr>
+                                        <td class="text-center">@candidate.CandidateFirstName @candidate.CandidateLastName</td>
+                                        <td class="text-center">@candidate.CandidateEmail</td>
+                                        <td class="text-center">@candidate.CandidatePhone</td>
+                                        <td class="text-center">
+                                            @if (candidateStatus == "Completed")
+                                            {
+                                                <div class="badge badge-success">@candidateStatus</div>
+
+                                            }
+                                            else
+                                            {
+                                                <div class="badge badge-warning">@candidateStatus</div>
+                                            }
+                                        </td>
+                                        @if (candidateStatus == "Completed")
+                                        {
+                                            <td class="text-center"><b>@candidate.OverallScore</b></td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-center"></td>
+                                        }
+                                        <td class="text-center">@candidate.LastUpdated</td>
+                                        <td class="text-center">
+                                            @if (candidateStatus == "Completed")
+                                            {
+                                                <a href="/Reviewer/ScoreCard?id=@candidate.CandidateId" class="btn btn-primary">View Score Card</a>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" id="PopoverCustomT-1" class="btn btn-sm">None</button>
+                                            }
+                                        </td>
+                                    </tr>
                                         }
                                     }
                                 </tbody>
