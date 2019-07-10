@@ -239,7 +239,7 @@
             </div>
         </div>
         <div class="page-title-actions">
-            <a asp-area="" asp-controller="ClientDashboard" asp-action="NewScreening" class="btn btn-primary">Add New Job requirement</a>
+            <a asp-area="" asp-controller="ClientDashboard" asp-action="NewScreening" class="mr-2 btn btn-primary active"><i class="fas fa-plus"></i> New Tech Screening</a>
         </div>
     </div>
 </div>
@@ -248,7 +248,7 @@
 @foreach (var screen in Model)
 {
 <div class="main-card mb-3 card">
-    <div class="card-header" style="background-color:blue;">
+    <div class="card-header bg-malibu-beach">
         <div class="col-md-2 mb-3">
             <p style="margin-bottom: 0rem; margin-top: 1rem; color: white">Date  :&nbsp;&nbsp;@Convert.ToDateTime(screen.CreatedOn).ToString("MM/dd/yyyy")</p>
         </div>
@@ -336,9 +336,7 @@
                         <div class="card-header" style="background-color:lavender">
                             Candidates
                             <div class="btn-actions-pane-right">
-                                <div role="group" class="btn-group-sm btn-group">
-                                    <button class="btn btn-primary addCandidateButton" value="@screen.ScreeningId">Add New Candidate</button>
-                                </div>
+                                <button class="btn-transition btn btn-outline-primary addCandidateButton" value="@screen.ScreeningId"><i class="fas fa-plus"></i> Add New Candidate</button>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -387,7 +385,7 @@
                                         <td class="text-center">
                                             @if (candidateStatus == "Completed")
                                             {
-                                                <a href="/Reviewer/ScoreCard?id=@candidate.CandidateId" class="btn btn-primary">View Score Card</a>
+                                                <a href="/Reviewer/ScoreCard?id=@candidate.CandidateId" class="btn-transition btn btn-outline-success"><i class="fas fa-eye"></i> View Score Card</a>
                                             }
                                             else
                                             {

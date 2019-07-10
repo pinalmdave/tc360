@@ -3,9 +3,24 @@
     ViewData["Title"] = "Success";
 }
 
-<h2>Payment Success</h2>
+@*<h2>Payment Success</h2>
 
 <br />
 
-<a href="@Url.Action("Index", "ClientDashboard")">Go to Dashboard</a>
+<a href="@Url.Action("Index", "ClientDashboard")">Go to Dashboard</a>*@
+
+
+<div class="container">
+    <div class="col-md-12">
+        <div class="card-shadow-primary border mb-3 card card-body border-primary">
+            <h3 class="card-title">
+                Paymment Successful
+            </h3>
+            <h5>Thanks for scheduling your job applicant's tech screening with TechScreen360. We will send you screening feedback shortly after job applicant(s) completes screening interview.</h5>
+            <hr />
+            <a href="@Url.Action("Index", "ClientDashboard")">Go to Dashboard</a>
+
+        </div>
+    </div>
+</div>
 
