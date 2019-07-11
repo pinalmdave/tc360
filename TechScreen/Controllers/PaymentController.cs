@@ -56,8 +56,8 @@ namespace TechScreen.Controllers
                     Quantity = 1,
                 },
             },
-                SuccessUrl = "https://localhost:44349/Payment/Success",
-                CancelUrl = "https://localhost:44349/Payment/Error",
+                SuccessUrl = "https://www.techscreen360.com/Payment/Success",
+                CancelUrl = "https://www.techscreen360.com/Payment/Error",
             };
 
             var service = new SessionService();
